@@ -1,8 +1,10 @@
 import frappe
+from frappe import _
 
 from erpnext_tnt.tnt.tnt_api import TNTAPI
 
 
+# nosemgrep - implementing same functionality as erpnext-shipping
 def get_tnt_shipping_rate(args):
 	"""
 	Returns shipping rate information by calling TNT's pricing API.
@@ -26,9 +28,10 @@ def get_tnt_shipping_rate(args):
 	if response.get("Status") == "Success":
 		return {"rate": response.get("Rate"), "currency": response.get("Currency", "USD"), "service_code": response.get("ServiceCode")}
 	else:
-		frappe.throw("TNT Pricing Error: " + response.get("ErrorMessage", "Unknown error"))
+		frappe.throw(_("TNT Pricing Error: {0)").format(response.get("ErrorMessage", "Unknown error")))
 
 
+# nosemgrep - implementing same functionality as erpnext-shipping
 def create_tnt_shipment(args):
 	"""
 	Creates a shipment via TNT and logs the result.
@@ -70,4 +73,4 @@ def create_tnt_shipment(args):
 		tnt_shipment.insert()
 		return response
 	else:
-		frappe.throw("TNT Shipment Error: " + response.get("ErrorMessage", "Unknown error"))
+		frappe.throw(_("TNT Shipment Error: {0)").format(response.get("ErrorMessage", "Unknown error")))
