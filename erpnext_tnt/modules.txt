@@ -1,1 +1,1 @@
-ERPNext TNT Integration
+TNT

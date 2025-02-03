@@ -169,7 +169,7 @@ app_license = "mit"
 # Testing
 # -------
 
-# before_tests = "erpnext_tnt.install.before_tests"
+before_tests = "erpnext_tnt.utils.before_tests"
 
 # Overriding Methods
 # ------------------------------
@@ -241,4 +241,3 @@ app_license = "mit"
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
-

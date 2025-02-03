@@ -1,0 +1,84 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-02-03 19:55:52.586346",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "section_break_afpq",
+  "api_username",
+  "api_password",
+  "carrier_account",
+  "default_service_code",
+  "mode"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "depends_on": "eval: doc.enabled",
+   "fieldname": "section_break_afpq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "api_username",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "TNT API Username",
+   "mandatory_depends_on": "eval: doc.enabled"
+  },
+  {
+   "fieldname": "api_password",
+   "fieldtype": "Password",
+   "label": "TNT API Password",
+   "mandatory_depends_on": "eval: doc.enabled"
+  },
+  {
+   "fieldname": "carrier_account",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "TNT Carrier Account Number",
+   "mandatory_depends_on": "eval: doc.enabled"
+  },
+  {
+   "fieldname": "default_service_code",
+   "fieldtype": "Data",
+   "label": "Default shipping service"
+  },
+  {
+   "fieldname": "mode",
+   "fieldtype": "Select",
+   "label": "Mode",
+   "mandatory_depends_on": "eval: doc.enabled",
+   "options": "Test\nLive"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-02-03 20:00:59.423961",
+ "modified_by": "Administrator",
+ "module": "TNT",
+ "name": "TNT Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
