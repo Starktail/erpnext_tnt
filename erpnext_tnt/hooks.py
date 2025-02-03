@@ -169,7 +169,7 @@ app_license = "mit"
 # Testing
 # -------
 
-# before_tests = "erpnext_tnt.install.before_tests"
+before_tests = "erpnext_tnt.utils.before_tests"
 
 # Overriding Methods
 # ------------------------------
