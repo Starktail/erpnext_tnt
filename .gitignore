@@ -5,3 +5,14 @@
 tags
 node_modules
 __pycache__
+erpnext_tnt/docs/current
+node_modules/
+cypress/videos
+cypress/screenshots
+erpnext_tnt/public/node_modules
+
+# Package management is managed by bench
+yarn.lock
+
+# built artefacts
+erpnext_tnt/public/dist
