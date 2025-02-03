@@ -51,4 +51,5 @@ CI=Yes bench build --app frappe &
 bench --site test_site reinstall --yes
 
 bench --verbose --site test_site install-app erpnext
+bench --verbose --site test_site install-app payments
 bench --verbose --site test_site install-app erpnext_tnt
