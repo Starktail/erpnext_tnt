@@ -4,7 +4,7 @@
 
 < codecov badge here >
 
-Customisations for Strategic Equipment
+ERPNext TNT Integration for shipping
 
 #### License
 
