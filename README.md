@@ -4,7 +4,7 @@
 
 < codecov badge here >
 
-ERPNext TNT Integration for shipping
+A TNT Express integration for ERPNext
 
 #### License
 
@@ -90,3 +90,8 @@ If you use VS Code, you can specify the `.flake8` config file in your `settings.
 ```shell
 "python.linting.flake8Args": ["--config=frappe-bench-v15/apps/erpnext_tnt/.flake8_strict"]
 ```
+
+
+#### Print Formats
+
+See `docs > print_format_generation > main.py` for steps to generate HTML print formats from TNT `XML` and `XSL` fies

@@ -5,45 +5,27 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "enabled",
+  "shipping_tab",
+  "shipping_enabled",
   "section_break_afpq",
-  "api_username",
-  "api_password",
-  "carrier_account",
+  "express_connect_shipping_endpoint",
+  "shipping_api_username",
+  "shipping_api_password",
+  "tnt_account",
   "default_service_code",
-  "mode"
+  "company_vat_number",
+  "hazardous_goods_un_number",
+  "labels_tab",
+  "labels_enabled",
+  "section_break_mohh",
+  "label_api_username",
+  "label_api_password"
  ],
  "fields": [
   {
-   "default": "0",
-   "fieldname": "enabled",
-   "fieldtype": "Check",
-   "label": "Enabled"
-  },
-  {
-   "depends_on": "eval: doc.enabled",
+   "depends_on": "eval: doc.shipping_enabled",
    "fieldname": "section_break_afpq",
    "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "api_username",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "TNT API Username",
-   "mandatory_depends_on": "eval: doc.enabled"
-  },
-  {
-   "fieldname": "api_password",
-   "fieldtype": "Password",
-   "label": "TNT API Password",
-   "mandatory_depends_on": "eval: doc.enabled"
-  },
-  {
-   "fieldname": "carrier_account",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "TNT Carrier Account Number",
-   "mandatory_depends_on": "eval: doc.enabled"
   },
   {
    "fieldname": "default_service_code",
@@ -51,17 +33,89 @@
    "label": "Default shipping service"
   },
   {
-   "fieldname": "mode",
-   "fieldtype": "Select",
-   "label": "Mode",
-   "mandatory_depends_on": "eval: doc.enabled",
-   "options": "Test\nLive"
+   "fieldname": "shipping_tab",
+   "fieldtype": "Tab Break",
+   "label": "Shipping"
+  },
+  {
+   "default": "0",
+   "fieldname": "shipping_enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "shipping_api_username",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Express Connect API Username",
+   "mandatory_depends_on": "eval: doc.shipping_enabled"
+  },
+  {
+   "fieldname": "shipping_api_password",
+   "fieldtype": "Password",
+   "label": "Express Connect API Password",
+   "mandatory_depends_on": "eval: doc.shipping_enabled"
+  },
+  {
+   "fieldname": "labels_tab",
+   "fieldtype": "Tab Break",
+   "label": "Labels"
+  },
+  {
+   "default": "0",
+   "fieldname": "labels_enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "depends_on": "eval: doc.labels_enabled",
+   "fieldname": "section_break_mohh",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "label_api_username",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Express Label API Username",
+   "mandatory_depends_on": "eval: doc.labels_enabled"
+  },
+  {
+   "fieldname": "label_api_password",
+   "fieldtype": "Password",
+   "label": "Express Label API Password",
+   "mandatory_depends_on": "eval: doc.labels_enabled"
+  },
+  {
+   "default": "https://express.tnt.com/expressconnect/shipping/ship",
+   "fieldname": "express_connect_shipping_endpoint",
+   "fieldtype": "Data",
+   "label": "Express Connect Shipping Endpoint",
+   "mandatory_depends_on": "eval: doc.shipping_enabled"
+  },
+  {
+   "description": "TNT account as supplied by your TNT - representative 9 digits for standard account and 10 digits for UK domestic",
+   "fieldname": "tnt_account",
+   "fieldtype": "Data",
+   "label": "TNT Account",
+   "mandatory_depends_on": "eval: doc.shipping_enabled"
+  },
+  {
+   "description": "Refer to ExpressConnect Shipping Integration Guide Appendix E: VAT codes",
+   "fieldname": "company_vat_number",
+   "fieldtype": "Data",
+   "label": "Company VAT Number"
+  },
+  {
+   "default": "UN3480",
+   "fieldname": "hazardous_goods_un_number",
+   "fieldtype": "Data",
+   "label": "Hazardous Goods UN Number"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-02-03 20:00:59.423961",
+ "modified": "2025-02-22 17:34:04.663139",
  "modified_by": "Administrator",
  "module": "TNT",
  "name": "TNT Settings",
