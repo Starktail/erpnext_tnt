@@ -9,10 +9,13 @@
   "amended_from",
   "tnt_shipment_id",
   "shipment",
-  "tracking_number",
+  "is_hazardous",
+  "column_break_hqox",
   "status",
+  "tracking_number",
   "section_break_xnjn",
-  "api_response"
+  "access_code",
+  "error"
  ],
  "fields": [
   {
@@ -35,8 +38,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "TNT Shipment ID",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "shipment",
@@ -52,8 +54,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Tracking Number",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
    "allow_on_submit": 1,
@@ -69,17 +70,39 @@
    "fieldtype": "Section Break"
   },
   {
+   "default": "0",
+   "fieldname": "is_hazardous",
+   "fieldtype": "Check",
+   "label": "Is Hazardous",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_hqox",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "The returned code that can be embedded into a character string formatted exactly like the XML document for transmission to the TNT server",
+   "fieldname": "access_code",
+   "fieldtype": "Data",
+   "label": "TNT Access Code",
+   "read_only": 1
+  },
+  {
    "description": "Used for debugging",
-   "fieldname": "api_response",
+   "fieldname": "error",
    "fieldtype": "Code",
-   "label": "API Response",
+   "label": "Error",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
- "is_submittable": 1,
- "links": [],
- "modified": "2025-02-03 20:04:52.202249",
+ "links": [
+  {
+   "link_doctype": "TNT Request Log",
+   "link_fieldname": "reference_docname"
+  }
+ ],
+ "modified": "2025-02-23 10:30:59.288508",
  "modified_by": "Administrator",
  "module": "TNT",
  "name": "TNT Shipment",
@@ -95,11 +118,11 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
-   "submit": 1,
    "write": 1
   }
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }
