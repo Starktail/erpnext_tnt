@@ -26,7 +26,7 @@ app_license = "mit"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/erpnext_tnt/css/erpnext_tnt.css"
-# app_include_js = "/assets/erpnext_tnt/js/erpnext_tnt.js"
+app_include_js = "tnt_shipping.bundle.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/erpnext_tnt/css/erpnext_tnt.css"
@@ -43,7 +43,7 @@ app_license = "mit"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {"Shipment": "public/js/shipment.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -253,5 +253,12 @@ fixtures = [
 				("Item-custom_tnt_is_hazardous"),
 			]
 		],
-	}
+	},
+	{
+		"dt": "DocType Link",
+		"filters": [
+			["parent", "=", "Shipment"],
+			["link_doctype", "=", "TNT Shipment"],
+		],
+	},
 ]

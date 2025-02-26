@@ -1,0 +1,19 @@
+[
+ {
+  "custom": 1,
+  "docstatus": 0,
+  "doctype": "DocType Link",
+  "group": null,
+  "hidden": 0,
+  "is_child_table": 0,
+  "link_doctype": "TNT Shipment",
+  "link_fieldname": "shipment",
+  "modified": "2025-02-26 15:28:20.325600",
+  "name": "khih8vs210",
+  "parent": "Shipment",
+  "parent_doctype": null,
+  "parentfield": "links",
+  "parenttype": "Customize Form",
+  "table_fieldname": null
+ }
+]

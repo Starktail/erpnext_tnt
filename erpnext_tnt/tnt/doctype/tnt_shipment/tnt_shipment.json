@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-02-03 20:01:59.383165",
+ "creation": "2025-02-25 11:13:14.378725",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -10,12 +10,15 @@
   "tnt_shipment_id",
   "shipment",
   "is_hazardous",
+  "tnt_service",
   "column_break_hqox",
   "status",
   "tracking_number",
+  "booking_reference",
   "section_break_xnjn",
   "access_code",
-  "error"
+  "error",
+  "shipment_data"
  ],
  "fields": [
   {
@@ -60,8 +63,9 @@
    "allow_on_submit": 1,
    "fieldname": "status",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Status",
-   "options": "Created\nLabel Generated\nDispatched\nDelivered\nError",
+   "options": "Draft\nCreated\nLabel Generated\nDispatched\nDelivered\nError",
    "read_only": 1
   },
   {
@@ -91,7 +95,25 @@
    "description": "Used for debugging",
    "fieldname": "error",
    "fieldtype": "Code",
-   "label": "Error",
+   "label": "Response Text",
+   "read_only": 1
+  },
+  {
+   "fieldname": "booking_reference",
+   "fieldtype": "Data",
+   "label": "Booking Reference",
+   "read_only": 1
+  },
+  {
+   "fieldname": "shipment_data",
+   "fieldtype": "JSON",
+   "label": "Shipment Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tnt_service",
+   "fieldtype": "Data",
+   "label": "TNT Service",
    "read_only": 1
   }
  ],
@@ -102,7 +124,7 @@
    "link_fieldname": "reference_docname"
   }
  ],
- "modified": "2025-02-23 10:30:59.288508",
+ "modified": "2025-02-26 15:31:58.612259",
  "modified_by": "Administrator",
  "module": "TNT",
  "name": "TNT Shipment",
