@@ -7,6 +7,7 @@ from typing import Tuple
 
 import frappe
 import requests
+from requests.auth import HTTPBasicAuth
 
 from erpnext_tnt.exceptions import TNTAPIDisabledError, TNTAPIError, TNTAPIUnexpectedResponseError
 
@@ -27,12 +28,16 @@ class TNTAPI:
 		if not self.tnt_settings.shipping_enabled:
 			raise TNTAPIDisabledError
 
-	def _build_xml_request(self, url, rendered_xml: str) -> Tuple[dict, str]:
+	def _build_xml_request(self, url, rendered_xml: str, use_form_data: bool = True) -> Tuple[dict, str, HTTPBasicAuth]:
 		headers = {"SOAPAction": url, "Content-Type": "application/x-www-form-urlencoded"}
-		encoded_xml = urllib.parse.quote(rendered_xml)
-		payload = f"xml_in={encoded_xml}"
+		auth = HTTPBasicAuth(self.tnt_settings.shipping_api_username, self.tnt_settings.get_password("shipping_api_password"))
+		if use_form_data:
+			encoded_xml = urllib.parse.quote(rendered_xml)
+			payload = f"xml_in={encoded_xml}"
+		else:
+			payload = rendered_xml
 
-		return headers, payload
+		return headers, payload, auth
 
 	def _parse_xml_response(self, xml_response):
 		root = ET.fromstring(xml_response)
@@ -41,7 +46,7 @@ class TNTAPI:
 			response_data[elem.tag] = elem.text
 		return response_data
 
-	def _request(self, method, url, params=None, data=None, headers=None) -> str:
+	def _request(self, method, url, params=None, data=None, headers=None, auth=None) -> str:
 		result = None
 		parsed_url = urllib.parse.urlparse(url)
 
@@ -61,7 +66,7 @@ class TNTAPI:
 				)
 
 		try:
-			result = requests.request(method, url, headers=headers, data=data)
+			result = requests.request(method, url, headers=headers, auth=auth, data=data)
 		except Exception as e:
 			_enqueue_log()
 			raise e
@@ -77,11 +82,12 @@ class TNTAPI:
 
 	def request_shipping(self, rendered_xml: str) -> TNTAPIResult:
 		result_data = {"access_code": None, "tnt_shipment": None}
+		url = self.tnt_settings.express_connect_shipping_endpoint
 
 		# Create the Consignment using the TNT API
-		url, headers, payload = self._build_xml_request(rendered_xml)
+		headers, payload, auth = self._build_xml_request(url, rendered_xml)
 		try:
-			post_response = self._request("POST", url, headers=headers, data=payload)
+			post_response = self._request("POST", url, headers=headers, auth=auth, data=payload)
 		except Exception as e:
 			return TNTAPIResult(error=e)
 
@@ -107,10 +113,9 @@ class TNTAPI:
 
 		# Get the created Consignment using the TNT API
 		command = f"GET_RESULT:{result_data['access_code']}"
-		url = self.tnt_settings.express_connect_shipping_endpoint
-		headers, payload = self._build_xml_request(url, command)
+		headers, payload, auth = self._build_xml_request(url, command)
 		try:
-			get_response = self._request("POST", url, headers=headers, data=payload)
+			get_response = self._request("POST", url, headers=headers, auth=auth, data=payload)
 		except Exception as e:
 			return TNTAPIResult(error=e)
 
@@ -146,7 +151,65 @@ class TNTAPI:
 		else:
 			return TNTAPIResult(error=TNTAPIError(get_response.text))
 
-	# def request_rates
+	def request_rates(self, rendered_xml: str) -> TNTAPIResult:
+		result_data = {"access_code": None, "tnt_shipment": None, "rates": None}
+		url = self.tnt_settings.express_connect_pricing_endpoint
+
+		# Get the Rates using the TNT API
+		headers, payload, auth = self._build_xml_request(url, rendered_xml, use_form_data=False)
+		try:
+			get_response = self._request("POST", url, headers=headers, auth=auth, data=payload)
+		except Exception as e:
+			return TNTAPIResult(error=e)
+
+		# Check if result is string or XML, we expect XML
+		try:
+			root = ET.fromstring(get_response.text)
+		except ET.ParseError as e:
+			return TNTAPIResult(TNTAPIUnexpectedResponseError())
+
+		# Check for errors in the response
+		if root.tag in ["parse_error", "runtime_error"]:
+			return TNTAPIResult(error=TNTAPIError(get_response.text))
+
+		# Validate response
+		if root.tag == "document" and root.find("priceResponse"):
+			rated_services = []
+
+			for rated_service in root.findall(".//ratedService"):
+				service_dict = {}
+
+				# Extract product info
+				product = rated_service.find("product")
+				if product is not None:
+					service_dict["product"] = {"id": product.findtext("id"), "productDesc": product.findtext("productDesc")}
+
+				# Extract pricing details
+				service_dict["totalPrice"] = rated_service.findtext("totalPrice")
+				service_dict["totalPriceExclVat"] = rated_service.findtext("totalPriceExclVat")
+				service_dict["vatAmount"] = rated_service.findtext("vatAmount")
+
+				# Extract charge elements
+				charge_elements = []
+				for charge in rated_service.findall("./chargeElements/chargeElement"):
+					charge_dict = {
+						"chargeItem": charge.findtext("chargeItem"),
+						"chargeCategory": charge.findtext("chargeCategory"),
+						"chargeCode": charge.findtext("chargeCode"),
+						"description": charge.findtext("description"),
+						"chargeValue": charge.findtext("chargeValue"),
+						"vatIndicator": charge.findtext("vatIndicator"),
+					}
+					charge_elements.append(charge_dict)
+				service_dict["chargeElements"] = charge_elements
+
+				rated_services.append(service_dict)
+
+			result_data["rates"] = rated_services
+			self.result = TNTAPIResult(raw_response_text=get_response.text, data=result_data)
+			return self.result
+		else:
+			return TNTAPIResult(error=TNTAPIError(get_response.text))
 
 
 def log_tnt_request(

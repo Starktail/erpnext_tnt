@@ -1,0 +1,52 @@
+{% if (data.length) { %}
+	<div style="overflow-x:scroll;">
+		<table class="table table-bordered table-hover">
+			<thead class="grid-heading-row">
+				<tr>
+					{% for (var i = 0; i < header_columns.length; i++) { %}
+						<th style="padding-left: 12px;">{{ header_columns[i] }}</th>
+					{% } %}
+					<th style="padding-left: 12px;"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for (var i = 0; i < data.length; i++) { %}
+					<tr id="data-{{i}}">
+						<td class="service-info" style="width:20%;">{{ data[i].product.id }}</td>
+						<td class="service-info" style="width:20%;">{{ data[i].product.productDesc }}</td>
+						<td class="service-info" style="width:20%;">{{ format_currency(data[i].totalPrice, "EUR", 2) }}</td>
+						<td class="service-info" style="width:20%;">{{ format_currency(data[i].totalPriceExclVat, "EUR", 2) }}</td>
+						<td class="service-info" style="width:20%;">{{ format_currency(data[i].vatAmount, "EUR", 2) }}</td>
+						<td style="width:10%;vertical-align: middle;">
+							<button data-index="{{i}}" id="data-{{i}}" type="button" class="btn">
+								{{ __("Select") }}
+							</button>
+						</td>
+					</tr>
+				{% } %}
+			</tbody>
+		</table>
+	</div>
+{% } else { %}
+	<div style="text-align: center; padding: 10px;">
+		<span class="text-muted">
+			{{ __("No Services Available") }}
+		</span>
+	</div>
+{% } %}
+
+<style type="text/css" media="screen">
+	.modal-dialog {
+		width: 750px;
+	}
+	.service-info {
+		vertical-align: middle !important;
+		padding-left: 12px !important;
+	}
+	.btn:hover {
+		background-color: #dedede;
+	}
+	.ship {
+		font-size: 16px;
+	}
+</style>

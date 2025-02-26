@@ -9,12 +9,14 @@
   "shipping_enabled",
   "section_break_afpq",
   "express_connect_shipping_endpoint",
+  "express_connect_pricing_endpoint",
+  "default_service_code",
+  "hazardous_goods_un_number",
+  "column_break_ddlp",
   "shipping_api_username",
   "shipping_api_password",
   "tnt_account",
-  "default_service_code",
   "company_vat_number",
-  "hazardous_goods_un_number",
   "labels_tab",
   "labels_enabled",
   "section_break_mohh",
@@ -110,12 +112,23 @@
    "fieldname": "hazardous_goods_un_number",
    "fieldtype": "Data",
    "label": "Hazardous Goods UN Number"
+  },
+  {
+   "default": "https://express.tnt.com/expressconnect/pricing/getprice",
+   "fieldname": "express_connect_pricing_endpoint",
+   "fieldtype": "Data",
+   "label": "Express Connect Pricing Endpoint",
+   "mandatory_depends_on": "eval: doc.shipping_enabled"
+  },
+  {
+   "fieldname": "column_break_ddlp",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-02-22 17:34:04.663139",
+ "modified": "2025-02-26 06:41:35.675276",
  "modified_by": "Administrator",
  "module": "TNT",
  "name": "TNT Settings",

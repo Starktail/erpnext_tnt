@@ -8,7 +8,7 @@
   "is_child_table": 0,
   "link_doctype": "TNT Shipment",
   "link_fieldname": "shipment",
-  "modified": "2025-02-25 15:43:27.042184",
+  "modified": "2025-02-26 15:28:20.325600",
   "name": "khih8vs210",
   "parent": "Shipment",
   "parent_doctype": null,

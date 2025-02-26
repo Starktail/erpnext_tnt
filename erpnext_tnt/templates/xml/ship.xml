@@ -195,7 +195,7 @@
               <!--Element DIVISION is mandatory for EC version 3.1-->
               <!-- G for international shipments, D for Global link domestic, H for German domestic and 010 for UK domestic -->
             <DIVISION><![CDATA[H]]></DIVISION>
-            <SERVICE><![CDATA[{{ shipment.custom_tnt_service or "15N" }}]]></SERVICE>
+            <SERVICE><![CDATA[{{ tnt_service or "15N" }}]]></SERVICE>
             <!--Element option is optional, maxOccurs=5-->
             <!-- <OPTION><![CDATA[PR]]></OPTION> -->
             <!--Element DESCRIPTION is optional.   Please describe the consignment goods being shipped.   This 

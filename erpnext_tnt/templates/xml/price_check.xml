@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<priceRequest>
+	<!--##########################################################
+    
+    Description:   This is a german domestic pricing request
+    
+    Please note:   In order to complete the request a valid account
+                   number must be provided.
+    
+    ##########################################################
+-->
+	<appId>PC</appId>
+	<appVersion>3.2</appVersion>
+	<priceCheck>
+		<rateId>rate1</rateId>
+		<sender>
+			<country><![CDATA[{{ shipment.pickup_addr_doc.country_code | upper }}]]></country>
+            <town><![CDATA[{{ shipment.pickup_addr_doc.city }}]]></town>
+            <postcode><![CDATA[{{ shipment.pickup_addr_doc.pincode }}]]></postcode>
+		</sender>
+		<delivery>
+            <country><![CDATA[{{ shipment.delivery_addr_doc.country_code | upper }}]]></country>
+            <town><![CDATA[{{ shipment.delivery_addr_doc.city }}]]></town>
+            <postcode><![CDATA[{{ shipment.delivery_addr_doc.pincode }}]]></postcode>
+		</delivery>
+		<collectionDateTime><![CDATA[{{ frappe.utils.format_datetime(frappe.utils.now(), "yyyy-MM-ddTHH:mm:ss") }}]]></collectionDateTime>
+		<product>
+			<type>N</type>
+		</product>
+		<account>
+            <accountNumber><![CDATA[{{ tnt_account }}]]></accountNumber>
+			<accountCountry><![CDATA[{{ shipment.pickup_addr_doc.country_code | upper }}]]></accountCountry>
+		</account>
+        <currency><![CDATA[{{ shipment.tnt_currency }}]]></currency>
+		<priceBreakDown>true</priceBreakDown>
+		<consignmentDetails>
+            <totalWeight><![CDATA[{{ shipment.tnt_total_weight }}]]></totalWeight>
+            <totalVolume><![CDATA[{{ shipment.tnt_total_volume }}]]></totalVolume>
+            <totalNumberOfPieces><![CDATA[{{ shipment.tnt_total_items_count }}]]></totalNumberOfPieces>
+		</consignmentDetails>
+        {% for parcel in shipment.shipment_parcel %}
+        <pieceLine>
+            <numberOfPieces><![CDATA[{{ parcel.count }}]]></numberOfPieces>
+			<pieceMeasurements>
+                <length><![CDATA[{{ parcel.length / 1000 }}]]></length>
+                <width><![CDATA[{{ parcel.width / 1000 }}]]></width>
+                <height><![CDATA[{{ parcel.height / 1000 }}]]></height>
+                <weight><![CDATA[{{ parcel.weight }}]]></weight>
+			</pieceMeasurements>
+			<pallet>false</pallet>
+        </pieceLine>
+        {% endfor %}
+	</priceCheck>
+</priceRequest>

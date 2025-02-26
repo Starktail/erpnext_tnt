@@ -9,21 +9,67 @@ from frappe.model.document import Document
 
 from erpnext_tnt.tnt.tnt_api import TNTAPI
 
+TNT_SERVICES = [
+	("08C", "8:00 Pharma Express"),
+	("09C", "9:00 Pharma Express"),
+	("10C", "10:00 Pharma Express"),
+	("08N", "8:00 Express"),
+	("08B", "8:00 Business Pak"),
+	("660", "Express Plus 12:00 Delivery"),
+	("12C", "12:00 Pharma Express"),
+	("15C", "Pharma Express"),
+	("09N", "9:00 Express"),
+	("10N", "10:00 Express"),
+	("09B", "9:00 Business Pak"),
+	("10B", "10:00 Business Pak"),
+	("12N", "12:00 Express"),
+	("15N", "Express"),
+	("12B", "12:00 Business Pak"),
+]
+
 
 def get_field_label(doc: Document, field_name: str) -> str:
 	field = next(f for f in doc.meta.fields if f.fieldname == field_name)
 	return field.label
 
 
+@frappe.whitelist()
+def create_tnt_shipment_doc_and_request_rates(shipment_name: str):
+	"""
+	Create a new TNT Shipment document from a linked Shipment document
+	"""
+	shipment = frappe.get_doc("Shipment", shipment_name)
+	tnt_shipment = frappe.new_doc("TNT Shipment")
+	tnt_shipment.shipment = shipment.name
+	tnt_shipment.save()
+
+	return tnt_shipment.fetch_rates_from_tnt_express_api()
+
+
+@frappe.whitelist()
+def book_tnt_shipment(tnt_shipment_name: str, service_data: str):
+	"""
+	Books a TNT Shipment document from a linked Shipment document
+	"""
+	tnt_shipment = frappe.get_doc("TNT Shipment", tnt_shipment_name)
+	service_data = json.loads(service_data)
+	tnt_shipment.tnt_service = service_data["product"]["id"]
+	tnt_shipment.save()
+	tnt_shipment.post_to_tnt_express_api()
+
+	return tnt_shipment
+
+
 class TNTShipment(Document):
 
 	erpnext_shipment_ext = None
 
-	def _raise_error(self, err: Exception):
+	def _raise_error(self, err: Exception, save_to_doc=True):
 		frappe.log_error(_("TNT API Error for TNT Shipment {0}").format(self.name), err, "TNT Shipment", self.name)
-		self.status = "Error"
-		self.error = str(err)
-		self.save()
+		if save_to_doc:
+			self.status = "Error"
+			self.error = str(err)
+			self.save()
 		return err
 
 	def check_if_shipment_contains_hazardous_items(self):
@@ -63,6 +109,7 @@ class TNTShipment(Document):
 				"is_hazardous": self.is_hazardous,
 				"hazardous_goods_un_number": self.tnt_settings.hazardous_goods_un_number,
 				"shipment": self.erpnext_shipment_ext,
+				"tnt_service": self.tnt_service,
 			},
 		)
 
@@ -80,6 +127,21 @@ class TNTShipment(Document):
 		self.shipment_data = json.dumps(tnt_shipment)
 		self.error = result.raw_response_text
 		self.status = "Created"
+
+		# Opportunistically try to add values to erpnext_shipping fields if they exist
+		shipment = frappe.get_doc("Shipment", self.shipment)
+		try:
+			shipment.db_set(
+				{
+					"shipment_id": tnt_shipment["tnt_shipment_id"],
+					"carrier": "TNT Express",
+				}
+			)
+			if len(shipment.shipment_delivery_note) > 0:
+				update_delivery_notes(delivery_note_names=[row.delivery_note for row in shipment.shipment_delivery_note], tracking_number=tnt_shipment["tnt_shipment_id"])
+		except Exception as e:
+			pass
+
 		self.save()
 
 	def load_linked_erpnext_shipment(self):
@@ -163,3 +225,49 @@ class TNTShipment(Document):
 				_("Last Name, Email or Phone/Mobile of the user are mandatory to continue.") + "</br>" + _("Please first set Last Name, Email and Phone for the user") + f' <a href="/app/user/${user}">${user}</a>'
 			)
 		self.erpnext_shipment_ext.pickup_contact_person_dict = company_contact
+
+	@frappe.whitelist()
+	def fetch_rates_from_tnt_express_api(self):
+		"""
+		Fetch shipping rates from the TNT Express API
+		"""
+		self._get_settings()
+		self.load_linked_erpnext_shipment()
+		self.validate_linked_erpnext_shipment()
+		self.check_if_shipment_contains_hazardous_items()
+
+		# Price check for hazardous shipments are not supported, so just return a list of standard rates
+		if self.is_hazardous:
+			return {"tnt_shipment": self.name, "is_hazardous": True, "rates": [{"product": {"id": service_code, "productDesc": service_descr}} for service_code, service_descr in TNT_SERVICES]}
+
+		rendered_xml = frappe.render_template(
+			"erpnext_tnt/templates/xml/price_check.xml",
+			context={
+				"username": self.tnt_settings.shipping_api_username,
+				"password": self.tnt_settings.get_password("shipping_api_password"),
+				"tnt_account": self.tnt_settings.tnt_account,
+				"vat_number": self.tnt_settings.company_vat_number,
+				"is_hazardous": self.is_hazardous,
+				"hazardous_goods_un_number": self.tnt_settings.hazardous_goods_un_number,
+				"shipment": self.erpnext_shipment_ext,
+			},
+		)
+
+		tnt_api = TNTAPI(dt=self.doctype, dn=self.name)
+		result = tnt_api.request_rates(rendered_xml)
+
+		if result.error:
+			return self._raise_error(result.error, save_to_doc=False)
+
+		result.data["tnt_shipment"] = self.name
+		result.data["is_hazardous"] = self.is_hazardous
+		return result.data
+
+
+def update_delivery_notes(delivery_note_names, tracking_number: str, carrier="TNT Express"):
+	# Update Shipment Info in Delivery Note
+	# Using db_set since some fields might not exist
+	for delivery_note in delivery_note_names:
+		dl_doc = frappe.get_doc("Delivery Note", delivery_note)
+		dl_doc.db_set("parcel_service", carrier)
+		dl_doc.db_set("tracking_number", tracking_number)

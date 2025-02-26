@@ -10,6 +10,7 @@
   "tnt_shipment_id",
   "shipment",
   "is_hazardous",
+  "tnt_service",
   "column_break_hqox",
   "status",
   "tracking_number",
@@ -62,6 +63,7 @@
    "allow_on_submit": 1,
    "fieldname": "status",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Status",
    "options": "Draft\nCreated\nLabel Generated\nDispatched\nDelivered\nError",
    "read_only": 1
@@ -107,6 +109,12 @@
    "fieldtype": "JSON",
    "label": "Shipment Data",
    "read_only": 1
+  },
+  {
+   "fieldname": "tnt_service",
+   "fieldtype": "Data",
+   "label": "TNT Service",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
@@ -116,7 +124,7 @@
    "link_fieldname": "reference_docname"
   }
  ],
- "modified": "2025-02-25 15:46:04.529416",
+ "modified": "2025-02-26 15:31:58.612259",
  "modified_by": "Administrator",
  "module": "TNT",
  "name": "TNT Shipment",
