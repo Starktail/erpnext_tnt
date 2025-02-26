@@ -42,7 +42,8 @@ sed -i 's/socketio:/# socketio:/g' Procfile
 sed -i 's/redis_socketio:/# redis_socketio:/g' Procfile
 
 bench get-app https://github.com/frappe/erpnext --branch $TEST_AGAINST_ERPNEXT_VERSION --resolve-deps
-bench get-app --overwrite serco_custom "${GITHUB_WORKSPACE}"
+bench get-app https://github.com/frappe/payments --branch version-15
+bench get-app --overwrite erpnext_tnt "${GITHUB_WORKSPACE}"
 bench --verbose setup env --python python3.10
 bench --verbose setup requirements --dev
 
