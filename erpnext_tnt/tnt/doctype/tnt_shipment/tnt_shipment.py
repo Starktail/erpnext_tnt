@@ -1,6 +1,8 @@
 # Copyright (c) 2025, Finfoot Tech (Pty) Ltd and contributors
 # For license information, please see license.txt
 
+import json
+
 import frappe
 from frappe import _
 from frappe.model.document import Document
@@ -71,6 +73,12 @@ class TNTShipment(Document):
 			return self._raise_error(result.error)
 
 		self.access_code = result.data["access_code"]
+		tnt_shipment = result.data["tnt_shipment"]
+		self.tnt_shipment_id = tnt_shipment["tnt_shipment_id"]
+		self.tracking_number = tnt_shipment["tnt_shipment_id"]
+		self.booking_reference = tnt_shipment["tnt_booking_reference"]
+		self.shipment_data = json.dumps(tnt_shipment)
+		self.error = result.raw_response_text
 		self.status = "Created"
 		self.save()
 

@@ -193,8 +193,9 @@
             <!-- <INSURANCEVALUE><![CDATA[150.00]]></INSURANCEVALUE>
             <INSURANCECURRENCY><![CDATA[GBP]]></INSURANCECURRENCY> -->
               <!--Element DIVISION is mandatory for EC version 3.1-->
-            <DIVISION><![CDATA[G]]></DIVISION>
-            <SERVICE><![CDATA[15N]]></SERVICE>
+              <!-- G for international shipments, D for Global link domestic, H for German domestic and 010 for UK domestic -->
+            <DIVISION><![CDATA[H]]></DIVISION>
+            <SERVICE><![CDATA[{{ shipment.custom_tnt_service or "15N" }}]]></SERVICE>
             <!--Element option is optional, maxOccurs=5-->
             <!-- <OPTION><![CDATA[PR]]></OPTION> -->
             <!--Element DESCRIPTION is optional.   Please describe the consignment goods being shipped.   This 
@@ -213,8 +214,8 @@
             <!--Element UNNUMBER and PACKINGGROUP are optional, please see user guide for further information-->
             {% if is_hazardous and hazardous_goods_un_number %}
             <UNNUMBER><![CDATA[{{ hazardous_goods_un_number }}]]></UNNUMBER>
+            <PACKINGGROUP>II</PACKINGGROUP>
             {% endif %}
-            <!-- <PACKINGGROUP/> -->
             <!--The PACKAGE element provides details on the package line.   There must be at least one Package 
 				per Consignment	when entered in detail form.  There may not be more than 50 Packages per Consignment
 				when entered in detail form with no more than 99 items for a consignment. -->
@@ -257,16 +258,23 @@
       <CREATE>
          <CONREF><![CDATA[{{ shipment.name }}-test-{{ time }}]]></CONREF>
       </CREATE>
-
-<!-- TODO: Enable BOOK and PRINT -->
-
-
-      <!-- <BOOK ShowBookingRef="Y">
+      {# We can not request rates for hazardous shipments #}
+      {% if not is_hazardous %}
+      <RATE>
          <CONREF><![CDATA[{{ shipment.name }}-test-{{ time }}]]></CONREF>
-      </BOOK> -->
+      </RATE>
+      {% endif %}
+      <BOOK ShowBookingRef="Y">
+         <CONREF><![CDATA[{{ shipment.name }}-test-{{ time }}]]></CONREF>
+      </BOOK>
       <!-- <SHIP>
          <CONREF><![CDATA[TESTREF1]]></CONREF>
       </SHIP> -->
+
+
+<!-- TODO: Enable PRINT -->
+
+
       <!-- <PRINT>
          <CONNOTE>
             <CONREF><![CDATA[TESTREF1]]></CONREF>

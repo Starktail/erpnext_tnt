@@ -250,8 +250,15 @@ fixtures = [
 			[
 				"name",
 				"in",
-				("Item-custom_tnt_is_hazardous"),
+				("Item-custom_tnt_is_hazardous", "Shipment-custom_tnt_service"),
 			]
 		],
-	}
+	},
+	{
+		"dt": "DocType Link",
+		"filters": [
+			["parent", "=", "Shipment"],
+			["link_doctype", "=", "TNT Shipment"],
+		],
+	},
 ]

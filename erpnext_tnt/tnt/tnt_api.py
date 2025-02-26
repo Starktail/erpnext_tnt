@@ -27,14 +27,12 @@ class TNTAPI:
 		if not self.tnt_settings.shipping_enabled:
 			raise TNTAPIDisabledError
 
-	def _build_xml_request(self, rendered_xml: str) -> Tuple[str, dict, str]:
-
-		url = self.tnt_settings.express_connect_shipping_endpoint
-		headers = {"SOAPAction": self.tnt_settings.express_connect_shipping_endpoint, "Content-Type": "application/x-www-form-urlencoded"}
+	def _build_xml_request(self, url, rendered_xml: str) -> Tuple[dict, str]:
+		headers = {"SOAPAction": url, "Content-Type": "application/x-www-form-urlencoded"}
 		encoded_xml = urllib.parse.quote(rendered_xml)
 		payload = f"xml_in={encoded_xml}"
 
-		return url, headers, payload
+		return headers, payload
 
 	def _parse_xml_response(self, xml_response):
 		root = ET.fromstring(xml_response)
@@ -109,7 +107,8 @@ class TNTAPI:
 
 		# Get the created Consignment using the TNT API
 		command = f"GET_RESULT:{result_data['access_code']}"
-		url, headers, payload = self._build_xml_request(command)
+		url = self.tnt_settings.express_connect_shipping_endpoint
+		headers, payload = self._build_xml_request(url, command)
 		try:
 			get_response = self._request("POST", url, headers=headers, data=payload)
 		except Exception as e:
@@ -128,21 +127,26 @@ class TNTAPI:
 			return TNTAPIResult(error=TNTAPIError(get_response.text))
 
 		# Validate response
-		if root.tag == "document" and (create_element := root.find("CREATE")) and create_element.find("SUCCESS").text == "Y":
+		if root.tag == "document" and (create_element := root.find("CREATE")) and create_element.find("SUCCESS").text == "Y" and (book_element := root.find("BOOK")):
 			rate_element = root.find("RATE")
-			book_element = root.find("BOOK")
+
+			service_element = rate_element.find("SERVICE")
+			currency_element = rate_element.find("CURRENCY")
+			chid_rate_element = rate_element.find("RATE")
 			tnt_shipment = {
-				"tnt_shipment_id": create_element.find("CONREF").text,
-				"tnt_service": rate_element.find("SERVICE").text,
-				"tnt_currency": rate_element.find("CURRENCY").text,
-				"tnt_rate": rate_element.find("RATE").text,
-				"tnt_booking_reference": book_element.find("BOOKINGREF").text,
+				"tnt_shipment_id": create_element.find("CONNUMBER").text,
+				"tnt_service": service_element.text if service_element else None,
+				"tnt_currency": currency_element.text if currency_element else None,
+				"tnt_rate": chid_rate_element.text if chid_rate_element else None,
+				"tnt_booking_reference": book_element.find("CONSIGNMENT").find("BOOKINGREF").text,
 			}
-			result_data["tnt_shipment"] = create_element.find("SUCCESS")
+			result_data["tnt_shipment"] = tnt_shipment
 			self.result = TNTAPIResult(raw_response_text=get_response.text, data=result_data)
 			return self.result
 		else:
 			return TNTAPIResult(error=TNTAPIError(get_response.text))
+
+	# def request_rates
 
 
 def log_tnt_request(
