@@ -209,12 +209,15 @@ class TNTShipment(Document):
 					frappe.throw(_("Missing required field: {0} for Address '{1}'").format(frappe.bold(label), frappe.bold(addr.name)))
 
 		# Validate required fields on contacts
-		required_contact_fields = ["phone", "email_id"]
 		contact = self.erpnext_shipment_ext.delivery_contact_doc
-		for field_name in required_contact_fields:
-			if not contact.get(field_name):
-				label = get_field_label(contact, field_name)
-				frappe.throw(_("Missing required field: {0} for Contact '{1}'").format(frappe.bold(label), frappe.bold(contact.name)))
+		if not contact.get("email_id"):
+			label = get_field_label(contact, "email_id")
+			frappe.throw(_("Missing required field: {0} for Contact '{1}'").format(frappe.bold(label), frappe.bold(contact.name)))
+
+		# Validate that either phone or mobile_no is set on Contact
+		if not contact.get("phone") and not contact.get("mobile_no"):
+			label = get_field_label(contact, "phone") + "/" + get_field_label(contact, "mobile_no")
+			frappe.throw(_("Missing required field: {0} for Contact '{1}'").format(frappe.bold(label), frappe.bold(contact.name)))
 
 	def get_company_contact(self):
 		user = self.erpnext_shipment_ext.pickup_contact_person

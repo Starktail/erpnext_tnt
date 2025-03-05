@@ -127,7 +127,7 @@
                <!-- <VAT/> -->
                <CONTACTNAME><![CDATA[{{ shipment.delivery_contact_doc.name }}]]></CONTACTNAME>
                <CONTACTDIALCODE><![CDATA[000]]></CONTACTDIALCODE>
-               <CONTACTTELEPHONE><![CDATA[{{ shipment.delivery_contact_doc.phone | replace("+","") }}]]></CONTACTTELEPHONE>
+               <CONTACTTELEPHONE><![CDATA[{{ (shipment.delivery_contact_doc.phone or shipment.delivery_contact_doc.mobile_no) | replace("+","") }}]]></CONTACTTELEPHONE>
                <CONTACTEMAIL><![CDATA[{{ shipment.delivery_contact_doc.email_id }}]]></CONTACTEMAIL>
             </RECEIVER>
             <!-- <DELIVERY> -->
