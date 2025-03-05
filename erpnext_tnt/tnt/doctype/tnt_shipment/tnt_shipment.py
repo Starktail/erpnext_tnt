@@ -241,7 +241,12 @@ class TNTShipment(Document):
 
 		# Price check for hazardous shipments are not supported, so just return a list of standard rates
 		if self.is_hazardous:
-			return {"tnt_shipment": self.name, "is_hazardous": True, "rates": [{"product": {"id": service_code, "productDesc": service_descr}} for service_code, service_descr in TNT_SERVICES]}
+			return {
+				"tnt_shipment": self.name,
+				"is_hazardous": True,
+				"default_service": self.tnt_settings.default_service_code,
+				"rates": [{"product": {"id": service_code, "productDesc": service_descr}} for service_code, service_descr in TNT_SERVICES],
+			}
 
 		rendered_xml = frappe.render_template(
 			"erpnext_tnt/templates/xml/price_check.xml",
@@ -264,6 +269,7 @@ class TNTShipment(Document):
 
 		result.data["tnt_shipment"] = self.name
 		result.data["is_hazardous"] = self.is_hazardous
+		result.data["default_service"] = self.tnt_settings.default_service_code
 		return result.data
 
 

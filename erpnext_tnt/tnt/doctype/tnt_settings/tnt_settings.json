@@ -30,6 +30,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "description": "The TNT Express Service code, e.g. <code>15N</code>. This service will be listed first.",
    "fieldname": "default_service_code",
    "fieldtype": "Data",
    "label": "Default shipping service"
@@ -128,7 +129,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-02-26 06:41:35.675276",
+ "modified": "2025-03-05 11:22:45.962911",
  "modified_by": "Administrator",
  "module": "TNT",
  "name": "TNT Settings",
