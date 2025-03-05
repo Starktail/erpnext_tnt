@@ -122,7 +122,7 @@ class TNTShipment(Document):
 		self.access_code = result.data["access_code"]
 		tnt_shipment = result.data["tnt_shipment"]
 		self.tnt_shipment_id = tnt_shipment["tnt_shipment_id"]
-		self.tracking_number = tnt_shipment["tnt_shipment_id"]
+		self.tracking_number = tnt_shipment["access_code"]
 		self.booking_reference = tnt_shipment["tnt_booking_reference"]
 		self.shipment_data = json.dumps(tnt_shipment)
 		self.error = result.raw_response_text
@@ -133,12 +133,12 @@ class TNTShipment(Document):
 		try:
 			shipment.db_set(
 				{
-					"shipment_id": tnt_shipment["tnt_shipment_id"],
+					"shipment_id": tnt_shipment["access_code"],
 					"carrier": "TNT Express",
 				}
 			)
 			if len(shipment.shipment_delivery_note) > 0:
-				update_delivery_notes(delivery_note_names=[row.delivery_note for row in shipment.shipment_delivery_note], tracking_number=tnt_shipment["tnt_shipment_id"])
+				update_delivery_notes(delivery_note_names=[row.delivery_note for row in shipment.shipment_delivery_note], tracking_number=tnt_shipment["access_code"])
 		except Exception as e:
 			pass
 
