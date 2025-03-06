@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<?xml-stylesheet href="https://express.tnt.com/expresswebservices-website/stylesheets/HTMLManifestRenderer.xsl" type="text/xsl"?>
-<!-- <?xml-stylesheet href="HTMLManifestRenderer.xsl" type="text/xsl"?> -->
+<!-- <?xml-stylesheet href="https://express.tnt.com/expresswebservices-website/stylesheets/HTMLManifestRenderer.xsl" type="text/xsl"?> -->
+<?xml-stylesheet href="HTMLManifestRenderer.xsl" type="text/xsl"?>
 <CONSIGNMENTBATCH>
 <BARCODEURL>/barbecue/barcode?type=code39&amp;height=70&amp;width=1&amp;data=</BARCODEURL>
 <!-- <HOST>http://gblabvl45.gb.tntpost.com:9082</HOST> -->

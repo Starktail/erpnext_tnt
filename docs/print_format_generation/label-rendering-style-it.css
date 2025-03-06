@@ -1,0 +1,591 @@
+#boxIT {
+    position: relative;
+    top: 9px;
+    left: 9px;
+    border-collapse: collapse;
+    border-style: solid;
+    border-width: 1px;
+    text-align: center;
+    font-family: arial;
+    width: 330px;
+    height: 485px;
+}
+
+#logoIT {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 112px;
+    height: 61px;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: solid;
+    text-align: center;
+    padding-top: 10px;
+}
+
+#logoIT img {
+    text-align: center;
+    height: 35px;
+}
+
+#marketAndTransportTypeIT {
+    position: absolute;
+    top: 1px;
+    left: 116px;
+    width: 138px;
+    height: 28px;
+    background-color: #FFFFFF;
+    font-weight: plain;
+    font-size: 18px;
+    text-align: left;
+}
+
+#hazardousIT {
+    position: absolute;
+    top: 22px;
+    left: 116px;
+    width: 138px;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: left;
+}
+
+#xrayIT {
+    position: absolute;
+    top: 40px;
+    left: 116px;
+    width: 138px;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: left;
+}
+
+#freeCirculationIndicatorIT {
+    position: absolute;
+    top: 0px;
+    left: 254px;
+    width: 39px;
+    height: 61px;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-color: black;
+    font-weight: bold;
+    font-size: 45px;
+    text-align: center;
+}
+
+#sortSplitIndicatorIT {
+    position: absolute;
+    top: 1px;
+    left: 294px;
+    width: 39px;
+    height: 60px;
+    border-color: black;
+    font-weight: bold;
+    font-size: 45px;
+    text-align: center;
+}
+
+#conNumberIT {
+    position: absolute;
+    top: 61px;
+    left: 1px;
+    width: 162px;
+    height: 31px;
+    line-height: 60%;
+    padding-left: 3px;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: black;
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: black;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #FFFFFF;
+    text-align: left;
+}
+
+#conNumberHeaderIT {
+    font-size: 10px;
+}
+
+#conNumberDetailIT {
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 100%;
+}
+
+#serviceIT {
+    position: absolute;
+    top: 61px;
+    left: 167px;
+    width: 163px;
+    height: 32px;
+    line-height: 70%;
+    background-color: #000000;
+    border-color: black;
+    border-top-width: 1px;
+    border-top-style: solid;
+    color: #FFFFFF;
+    text-align: left;
+}
+
+#serviceHeaderIT {
+    font-size: 10px;
+}
+
+#serviceDetailIT {
+    font-weight: bold;
+    line-height: 100%;
+}
+
+#optionIT {
+    position: absolute;
+    top: 92px;
+    left: 167px;
+    width: 163px;
+    height: 31px;
+    line-height: 75%;
+    background-color: #000000;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-color: black;
+    text-align: left;
+    color: #FFFFFF;
+}
+
+#optionHeaderIT {
+    font-size: 10px;
+}
+
+#optionDetailIT {
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 100%;
+}
+
+#optionDetailIT {
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 75%;
+}
+
+#pieceIT {
+    position: absolute;
+    top: 93px;
+    left: 1px;
+    width: 83px;
+    height: 31px;
+    padding-left: 3px;
+    line-height: 75%;
+    background-color: #FFFFFF;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-color: black;
+    text-align: left;
+}
+
+#pieceHeaderIT {
+    font-size: 10px;
+}
+
+#pieceDetailIT {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 100%;
+}
+
+#weightIT {
+    position: absolute;
+    top: 93px;
+    left: 87px;
+    width: 79px;
+    height: 31px;
+    line-height: 75%;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: black;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-color: black;
+    text-align: left;
+}
+
+#weightHeaderIT {
+    font-size: 10px;
+}
+
+#weightDetailIT {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 100%;
+}
+
+#weightDetailHighlightedIT {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 100%;
+    background-color: black;
+    color: white;
+}
+
+#contactInfoIT {
+    position: absolute;
+    top: 125px;
+    left: 1px;
+    width: 162px;
+    height: 24px;
+    padding-left: 3px;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-color: black;
+    text-align: left;
+    line-height: 65%;
+}
+
+#contactInfoHeaderIT {
+    font-size: 9px;
+}
+
+#contactInfoDetailIT {
+    font-size: 12px;
+    font-weight: bold;
+    padding-left: 3px;
+}
+
+#referenceIT {
+    position: absolute;
+    top: 139px;
+    left: 1px;
+    width: 162px;
+    height: 18px;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: black;
+    border-bottom-style: none;
+    text-align: left;
+    padding-left: 3px;
+    line-height: 65%;
+}
+
+#referenceHeaderIT {
+    font-size: 9px;
+}
+
+#referenceDetailIT {
+    font-size: 12px;
+    font-weight: bold;
+    padding-left: 3px;
+}
+
+#accountNumberIT {
+    position: absolute;
+    top: 151px;
+    left: 1px;
+    width: 162px;
+    height: 9px;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: black;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    text-align: left;
+    padding-left: 3px;
+    padding-bottom: 5px;
+    font-size: 10px;
+}
+
+#accountNumberHeaderIT {
+    font-size: 9px;
+}
+
+#accountNumberDetailIT {
+    font-size: 12px;
+    font-weight: bold;
+    padding-left: 3px;
+}
+
+#originDepotIT {
+    position: absolute;
+    top: 123px;
+    left: 168px;
+    width: 88px;
+    height: 34px;
+    padding-left: 3px;
+    text-align: left;
+    line-height: 90%;
+}
+
+#originDepotHeaderIT {
+    float:left;
+    font-size: 9px;
+}
+
+#originDepotDetailIT {
+    font-size: 24px;
+    font-weight: bold;
+    padding-left: 20px;
+    position: relative;
+    top: -1px;
+}
+
+#pickupDateIT {
+    position: absolute;
+    top: 122px;
+    left: 260px;
+    width: 75px;
+    height: 32px;
+    text-align: left;
+    line-height: 75%;
+}
+
+#pickupDateHeaderIT {
+    font-size: 10px;
+}
+
+#pickupDateDetailIT {
+    font-size: 10px;
+}
+
+#originAddressIT {
+    position: absolute;
+    top: 166px;
+    left: 1px;
+    width: 162px;
+    height: 66px;
+    padding-left: 3px;
+    line-height: 65%;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-style: dashed;
+    border-color: black;
+    text-align: left;
+}
+
+#originAddressHeaderIT {
+    font-size: 9px;
+}
+
+#originAddressDetailIT {
+    font-size: 9px;
+    padding-left: 10px;
+}
+
+#deliveryAddressIT {
+    position: absolute;
+    top: 233px;
+    left: 1px;
+    width: 162px;
+    height: 70px;
+    padding-left: 3px;
+    line-height: 70%;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-color: black;
+    text-align: left;
+}
+
+#deliveryAddressHeaderIT {
+    font-size: 9px;
+}
+
+#deliveryAddressDetailIT {
+    font-size: 9px;
+    padding-left: 10px;
+}
+
+#routingIT {
+    position: absolute;
+    top: 154px;
+    left: 168px;
+    width: 159px;
+    height: 125px;
+    padding-left: 3px;
+    padding-top: 1px;
+    line-height: 55%;
+    background-color: #FFFFFF;
+    border-bottom-width: 1px;
+    border-bottom-style: dashed;
+    border-top-width: 1px;
+    border-top-style: dashed;
+    border-color: black;
+    text-align: left;
+}
+
+#routingHeaderIT {
+    float:left;
+    font-size: 10px;
+}
+
+#routingDetailIT {
+    font-size: 32px;
+    font-weight: bold;
+    padding-left: 40px;
+    padding-top: 0px;
+    line-height: 90%;
+    float: left;
+}
+
+#sortIT {
+    position: absolute;
+    top: 282px;
+    left: 167px;
+    width: 159px;
+    height: 29px;
+    padding-left: 3px;
+    background-color: #FFFFFF;
+    border-bottom-width: 1px;
+    border-bottom-style: dashed;
+    border-color: black;
+    text-align: left;
+}
+
+#sortHeaderIT {
+    float:left;
+    font-size: 10px;
+}
+
+#sortDetailIT {
+    font-size: 30px;
+    font-weight: bold;
+    padding-left: 15px;
+    line-height: 100%;
+}
+
+#microzonaHeaderIT {
+    position: absolute;
+    top: 315px;
+    left: 0px;
+    width: 60px;
+    height: 30px;
+    padding-left: 4px;
+    font-size: 9px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-color: black;
+    text-align: left;
+}
+
+#microzonaIT {
+    position: absolute;
+    top: 304px;
+    left: 48px;
+    width: 79px;
+    height: 41px;
+    background-color: black;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-color: black;
+    text-align: center;
+}
+
+#microzonaDetailIT {
+    position: relative;
+    top: 6px;
+    background-color: black;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+#bulkShipmentHeaderIT {
+    position: absolute;
+    top: 304px;
+    left: 123px;
+    width: 11px;
+    height: 41px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-color: black;
+}
+
+#bulkShipmentIT {
+    position: absolute;
+    top: 304px;
+    left: 133px;
+    width: 33px;
+    height: 41px;
+    background-color: black;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-color: black;
+    text-align: center;
+}
+
+#bulkShipmentDetailIT {
+    position: relative;
+    top: 3px;
+    background-color: black;
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+}
+
+#destinationDepotHeaderIT {
+    position: absolute;
+    top: 315px;
+    left: 167px;
+    width: 42px;
+    height: 30px;
+    padding-left: 3px;
+    border-color: black;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    text-align: left;
+    font-size: 10px;
+}
+
+#destinationDepotDetailIT {
+    position: absolute;
+    top: 312px;
+    left: 203px;
+    width: 128px;
+    height: 33px;
+    border-color: black;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    text-align: left;
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 100%;
+}
+
+#barcodeIT {
+    position: absolute;
+    top: 348px;
+    left: 1px;
+    width: 327px;
+}
+
+#barcodeIT img {
+    padding-top: 10px;
+    width: 326px;
+    height: 105px;
+}
+
+#barcodeLabelIT {
+    position: absolute;
+    top: 473px;
+    left: 1px;
+    width: 327px;
+    font-size: 9px;
+}
+

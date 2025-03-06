@@ -10,6 +10,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 from erpnext_tnt.exceptions import TNTAPIDisabledError, TNTAPIError, TNTAPIUnexpectedResponseError
+from erpnext_tnt.tnt.xml_utils import parse_xml_to_dict
 
 
 @dataclass
@@ -20,24 +21,25 @@ class TNTAPIResult:
 
 
 class TNTAPI:
-	def __init__(self, dt, dn):
+	def __init__(self, dt, dn, auth: HTTPBasicAuth, access_code=None):
 		self.tnt_settings = frappe.get_cached_doc("TNT Settings")
 		self.dt = dt
 		self.dn = dn
+		self.auth = auth
+		self.access_code = access_code
 
 		if not self.tnt_settings.shipping_enabled:
 			raise TNTAPIDisabledError
 
 	def _build_xml_request(self, url, rendered_xml: str, use_form_data: bool = True) -> Tuple[dict, str, HTTPBasicAuth]:
 		headers = {"SOAPAction": url, "Content-Type": "application/x-www-form-urlencoded"}
-		auth = HTTPBasicAuth(self.tnt_settings.shipping_api_username, self.tnt_settings.get_password("shipping_api_password"))
 		if use_form_data:
 			encoded_xml = urllib.parse.quote(rendered_xml)
 			payload = f"xml_in={encoded_xml}"
 		else:
 			payload = rendered_xml
 
-		return headers, payload, auth
+		return headers, payload, self.auth
 
 	def _parse_xml_response(self, xml_response):
 		root = ET.fromstring(xml_response)
@@ -73,12 +75,6 @@ class TNTAPI:
 		else:
 			_enqueue_log()
 			return result
-
-	# def request_routing_label(self, request_data):
-	# 	xml_payload = self._build_xml_request("RoutingLabelRequest", request_data)
-	# 	headers = {"Content-Type": "application/xml"}
-	# 	response = requests.post(self.endpoint, data=xml_payload, headers=headers)
-	# 	return self._parse_xml_response(response.text)
 
 	def request_shipping(self, rendered_xml: str) -> TNTAPIResult:
 		result_data = {"access_code": None, "tnt_shipment": None}
@@ -206,6 +202,71 @@ class TNTAPI:
 				rated_services.append(service_dict)
 
 			result_data["rates"] = rated_services
+			self.result = TNTAPIResult(raw_response_text=get_response.text, data=result_data)
+			return self.result
+		else:
+			return TNTAPIResult(error=TNTAPIError(get_response.text))
+
+	def request_label_data(self, command_keyword: str):
+		"""
+		Generic method to request label data
+		"""
+		if command_keyword not in ["GET_LABEL", "GET_CONNOTE", "GET_MANIFEST"]:
+			raise frappe.ValidationError()
+
+		url = self.tnt_settings.express_connect_shipping_endpoint
+
+		# Get the created Consignment using the TNT API
+		command = f"{command_keyword}:{self.access_code}"
+		headers, payload, auth = self._build_xml_request(url, command)
+		try:
+			get_response = self._request("POST", url, headers=headers, auth=auth, data=payload)
+		except Exception as e:
+			return TNTAPIResult(error=e)
+
+		# Check if result is string or XML, we expect XML
+		try:
+			root = ET.fromstring(get_response.text)
+		except ET.ParseError as e:
+			return TNTAPIResult(TNTAPIUnexpectedResponseError())
+
+		# Check for errors in the response
+		if root.tag in ["parse_error", "runtime_error"]:
+			return TNTAPIResult(error=TNTAPIError(get_response.text))
+		if root.tag == "document" and root.find("ERROR"):
+			return TNTAPIResult(error=TNTAPIError(get_response.text))
+
+		# Validate response
+		if root.tag == "CONSIGNMENTBATCH":
+			result_data = parse_xml_to_dict(get_response.text)
+			self.result = TNTAPIResult(raw_response_text=get_response.text, data=result_data)
+			return self.result
+		else:
+			return TNTAPIResult(error=TNTAPIError(get_response.text))
+
+	def request_routing_label_data(self, rendered_xml: str) -> TNTAPIResult:
+		url = self.tnt_settings.express_label_endpoint
+
+		# Get the Rates using the TNT API
+		headers, payload, auth = self._build_xml_request(url, rendered_xml, use_form_data=False)
+		try:
+			get_response = self._request("POST", url, headers=headers, auth=auth, data=payload)
+		except Exception as e:
+			return TNTAPIResult(error=e)
+
+		# Check if result is string or XML, we expect XML
+		try:
+			root = ET.fromstring(get_response.text)
+		except ET.ParseError as e:
+			return TNTAPIResult(TNTAPIUnexpectedResponseError())
+
+		# Check for errors in the response
+		if root.tag in ["parse_error", "runtime_error"] or (root.tag == "labelResponse" and root.find("brokenRules")):
+			return TNTAPIResult(error=TNTAPIError(get_response.text))
+
+		# Validate response
+		if root.tag == "labelResponse" and root.find("consignment"):
+			result_data = parse_xml_to_dict(get_response.text)
 			self.result = TNTAPIResult(raw_response_text=get_response.text, data=result_data)
 			return self.result
 		else:

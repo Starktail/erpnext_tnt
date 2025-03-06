@@ -38,3 +38,4 @@ VAT Amount,MwSt.-Betrag,
 Creating Shipment,Sendung erstellen,
 Shipment {0} has been created with TNT,Sendung {0} wurde mit TNT erstellt,
 The TNT Express Service code, e.g. <code>15N</code>. This service will be listed first.,Der TNT Express-Dienstcode, z. B. <code>15N</code>. Dieser Dienst wird zuerst aufgeführt.,
+Shipping is not enabled in TNT Settings,Der Versand ist in den TNT-Einstellungen nicht aktiviert.
