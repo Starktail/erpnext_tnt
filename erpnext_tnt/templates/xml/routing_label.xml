@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>{% set time = frappe.utils.now()[-5:] %}
+<labelRequest>
+	<!--##########################################################
+        Description:    This is a german domestic request
+        Please note:    In order to complete certification of your
+                        express label connection.
+                        ALL element data  MUST be enclosed within
+                        CDATA tags.
+    ########################################################## -->
+	<consignment key="{{ shipment.name }}-test-{{ time }}">
+		<consignmentIdentity>
+			<consignmentNumber><![CDATA[{{ consignment_number }}]]></consignmentNumber>
+			<customerReference><![CDATA[{{ shipment.name }}-test-{{ time }}]]></customerReference>
+		</consignmentIdentity>
+		<collectionDateTime><![CDATA[{{ frappe.utils.format_datetime(shipment.pickup_date + shipment.pickup_from, "yyyy-MM-ddTHH:mm:ss") }}]]></collectionDateTime>
+		<sender>
+			<name><![CDATA[{{ shipment.pickup_company }}]]></name>
+			<addressLine1><![CDATA[{{ shipment.pickup_addr_doc.address_line1 }}]]></addressLine1>
+			<!--Element addressLine2 is optional-->
+            {% if shipment.pickup_addr_doc.address_line2 %}
+            <addressLine2><![CDATA[{{ shipment.pickup_addr_doc.address_line2 }}]]></addressLine2>
+            {% endif %}
+			<!--Element addressLine3 is optional-->
+			<!-- <addressLine3/> -->
+			<!--Element town is optional provided there is a postcode -->
+            <town><![CDATA[{{ shipment.pickup_addr_doc.city }}]]></town>
+			<!--Element exactMatch is optional -->
+			<exactMatch><![CDATA[Y]]></exactMatch>
+			<!--Element province is optional-->
+            {% if shipment.pickup_addr_doc.state %}
+            <province><![CDATA[{{ shipment.pickup_addr_doc.state }}]]></province>
+            {% endif %}
+			<!--Element postcode is optional-->
+            <postcode><![CDATA[{{ shipment.pickup_addr_doc.pincode }}]]></postcode>
+            <country><![CDATA[{{ shipment.pickup_addr_doc.country_code | upper }}]]></country>
+		</sender>
+		<delivery>
+            <name><![CDATA[{{ shipment.customer_name }}]]></name>
+            <addressLine1><![CDATA[{{ shipment.delivery_addr_doc.address_line1 }}]]></addressLine1>
+			<!--Element addressLine2 is optional-->
+            {% if shipment.delivery_addr_doc.address_line2 %}
+               <addressLine2><![CDATA[{{ shipment.delivery_addr_doc.address_line2 }}]]></addressLine2>
+            {% endif %}
+			<!--Element addressLine3 is optional-->
+			<!-- <addressLine3/> -->
+			<!--Element town is optional provided there is a postcode -->
+            <town><![CDATA[{{ shipment.delivery_addr_doc.city }}]]></town>
+			<!--Element exactMatch is optional -->
+			<exactMatch><![CDATA[Y]]></exactMatch>
+			<!--Element province is optional-->
+            {% if shipment.delivery_addr_doc.state %}
+               <province><![CDATA[{{ shipment.delivery_addr_doc.state }}]]></province>
+            {% endif %}
+			<!--Element postcode is optional-->
+            <postcode><![CDATA[{{ shipment.delivery_addr_doc.pincode }}]]></postcode>
+            <country><![CDATA[{{ shipment.delivery_addr_doc.country_code | upper }}]]></country>
+		</delivery>
+		<product>
+			<lineOfBusiness>1</lineOfBusiness>
+			<groupId>0</groupId>
+			<subGroupId>0</subGroupId>
+			<id>HC</id>
+			<type>N</type>
+			<!--Element option is optional, maxOccurs=5-->
+            {% if is_hazardous %}
+                <option id="HZ"><![CDATA[HZ]]></option>
+            {% endif %}
+		</product>
+		<account>
+            <accountNumber><![CDATA[{{ tnt_account }}]]></accountNumber>
+            <accountCountry><![CDATA[{{ shipment.pickup_addr_doc.country_code | upper }}]]></accountCountry>
+		</account>
+		<!--Element specialInstructions is optional-->
+		<specialInstructions/>
+        <totalNumberOfPieces>{{ shipment.tnt_total_items_count }}</totalNumberOfPieces>
+		<!--Element pieceLine, maxOccurs=unbounded-->
+        {% for parcel in shipment.shipment_parcel %}
+            <pieceLine>
+                <identifier>{{ parcel.idx }}</identifier>
+                <goodsDescription><![CDATA[{{ shipment.description_of_content }}]]></goodsDescription>
+                <pieceMeasurements>
+                    <length>{{ parcel.length / 1000 }}</length>
+                    <width>{{ parcel.width / 1000 }}</width>
+                    <height>{{ parcel.height / 1000 }}</height>
+                    <weight>{{ parcel.weight }}</weight>
+                </pieceMeasurements>
+                <!--Element pieces, maxOccurs=unbounded-->
+                <pieces>
+                    <!--Element sequenceNumbers, maxOccurs=unbounded-->
+                    <sequenceNumbers>1</sequenceNumbers>
+                    <pieceReference>piece1</pieceReference>
+                </pieces>
+            </pieceLine>
+        {% endfor %}
+	</consignment>
+</labelRequest>

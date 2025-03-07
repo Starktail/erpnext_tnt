@@ -19,9 +19,13 @@
   "company_vat_number",
   "labels_tab",
   "labels_enabled",
-  "section_break_mohh",
+  "section_break_srto",
+  "express_label_endpoint",
+  "column_break_vbiw",
   "label_api_username",
-  "label_api_password"
+  "label_api_password",
+  "section_break_mohh",
+  "pdf_options"
  ],
  "fields": [
   {
@@ -30,6 +34,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "description": "The TNT Express Service code, e.g. <code>15N</code>. This service will be listed first.",
    "fieldname": "default_service_code",
    "fieldtype": "Data",
    "label": "Default shipping service"
@@ -59,33 +64,15 @@
    "mandatory_depends_on": "eval: doc.shipping_enabled"
   },
   {
+   "depends_on": "eval: doc.shipping_enabled",
    "fieldname": "labels_tab",
    "fieldtype": "Tab Break",
    "label": "Labels"
   },
   {
-   "default": "0",
-   "fieldname": "labels_enabled",
-   "fieldtype": "Check",
-   "label": "Enabled"
-  },
-  {
    "depends_on": "eval: doc.labels_enabled",
    "fieldname": "section_break_mohh",
    "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "label_api_username",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Express Label API Username",
-   "mandatory_depends_on": "eval: doc.labels_enabled"
-  },
-  {
-   "fieldname": "label_api_password",
-   "fieldtype": "Password",
-   "label": "Express Label API Password",
-   "mandatory_depends_on": "eval: doc.labels_enabled"
   },
   {
    "default": "https://express.tnt.com/expressconnect/shipping/ship",
@@ -123,12 +110,53 @@
   {
    "fieldname": "column_break_ddlp",
    "fieldtype": "Column Break"
+  },
+  {
+   "default": "{\n    \"TNT Address Label\": {\n        \"margin-left\": \"0mm\",\n        \"margin-right\": \"0mm\"\n    },\n    \"TNT Consignment Note\": {\n        \"margin-left\": \"0mm\",\n        \"margin-right\": \"0mm\"\n    },\n    \"TNT Manifest\": {\n        \"margin-left\": \"0mm\",\n        \"margin-right\": \"0mm\"\n    }\n}",
+   "description": "wkhtmltopdf options as set in <code>frappe.utils.pdf.prepare_options()</code>",
+   "fieldname": "pdf_options",
+   "fieldtype": "JSON",
+   "label": "PDF options override"
+  },
+  {
+   "default": "0",
+   "fieldname": "labels_enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "depends_on": "eval: doc.labels_enabled",
+   "fieldname": "section_break_srto",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "https://express.tnt.com/expresslabel/documentation/getlabel",
+   "fieldname": "express_label_endpoint",
+   "fieldtype": "Data",
+   "label": "Express Label Endpoint",
+   "mandatory_depends_on": "eval: doc.labels_enabled"
+  },
+  {
+   "fieldname": "column_break_vbiw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "label_api_username",
+   "fieldtype": "Data",
+   "label": "Express Label API Username",
+   "mandatory_depends_on": "eval: doc.labels_enabled"
+  },
+  {
+   "fieldname": "label_api_password",
+   "fieldtype": "Password",
+   "label": "Express Label API Password",
+   "mandatory_depends_on": "eval: doc.labels_enabled"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-02-26 06:41:35.675276",
+ "modified": "2025-03-06 15:51:20.798514",
  "modified_by": "Administrator",
  "module": "TNT",
  "name": "TNT Settings",

@@ -18,7 +18,12 @@
   "section_break_xnjn",
   "access_code",
   "error",
-  "shipment_data"
+  "shipment_data",
+  "label_data_section",
+  "label_data",
+  "connote_data",
+  "manifest_data",
+  "routing_label_data"
  ],
  "fields": [
   {
@@ -115,6 +120,36 @@
    "fieldtype": "Data",
    "label": "TNT Service",
    "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "label_data_section",
+   "fieldtype": "Section Break",
+   "label": "Label Data"
+  },
+  {
+   "fieldname": "label_data",
+   "fieldtype": "JSON",
+   "label": "Address Label Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "connote_data",
+   "fieldtype": "JSON",
+   "label": "Consignment Note Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "manifest_data",
+   "fieldtype": "JSON",
+   "label": "Manifest Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "routing_label_data",
+   "fieldtype": "JSON",
+   "label": "Routing Label Data",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
@@ -124,7 +159,7 @@
    "link_fieldname": "reference_docname"
   }
  ],
- "modified": "2025-02-26 15:31:58.612259",
+ "modified": "2025-03-06 21:39:15.452717",
  "modified_by": "Administrator",
  "module": "TNT",
  "name": "TNT Shipment",

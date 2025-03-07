@@ -1,4 +1,9 @@
 {% if (data.length) { %}
+	{% if (default_service) { %}
+		<span class="highlighted-label">
+			{{ __("Default shipping service") }}: {{ default_service }}
+		</span>
+	{% } %}
 	<div style="overflow-x:scroll;">
 		<table class="table table-bordered table-hover">
 			<thead class="grid-heading-row">
@@ -11,7 +16,7 @@
 			</thead>
 			<tbody>
 				{% for (var i = 0; i < data.length; i++) { %}
-					<tr id="data-{{i}}">
+					<tr id="data-{{i}}" class="{{ data[i].product.id == default_service ? 'highlighted' : '' }}">
 						<td class="service-info" style="width:20%;">{{ data[i].product.id }}</td>
 						<td class="service-info" style="width:20%;">{{ data[i].product.productDesc }}</td>
 						<td class="service-info" style="width:20%;">{{ format_currency(data[i].totalPrice, "EUR", 2) }}</td>
@@ -36,6 +41,12 @@
 {% } %}
 
 <style type="text/css" media="screen">
+	.highlighted {
+		background-color: #5fb7ff;
+	}
+	.highlighted-label {
+		color: #5fb7ff;
+	}
 	.modal-dialog {
 		width: 750px;
 	}

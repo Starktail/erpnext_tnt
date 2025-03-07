@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="HTMLRoutingLabelRenderer.xsl" type="text/xsl"?>
+<labelResponse>
+    <consignment key="CON1">
+        <pieceLabelData>
+            <pieceNumber>1</pieceNumber>
+            <weightDisplay code="1.11" renderInstructions="yes">1.11kg</weightDisplay>
+            <pieceReference>
+                <![CDATA[piece1]]>
+            </pieceReference>
+            <barcode symbology="128C">123456782001136464218610</barcode>
+            <twoDBarcode symbology="pdf417">
+                <![CDATA[123456782|123456782||1||TNT Innight GmbH|Dieselstrasse 26|MUENCHEN|80267|DE||TNT Express Worldwide|Rua C, Edificio 77|EMMERICH|46421|DE|100|HC|N|PR|||||||N|||piecelinegoods desc|3|1.11|1.3676310000000003|N|05 Mar 2025|19:05:00]]>
+            </twoDBarcode>
+        </pieceLabelData>
+        <pieceLabelData>
+            <pieceNumber>2</pieceNumber>
+            <weightDisplay code="1.11" renderInstructions="yes">1.11kg</weightDisplay>
+            <pieceReference>
+                <![CDATA[piece1]]>
+            </pieceReference>
+            <barcode symbology="128C">123456782002136464218610</barcode>
+            <twoDBarcode symbology="pdf417">
+                <![CDATA[123456782|123456782||2||TNT Innight GmbH|Dieselstrasse 26|MUENCHEN|80267|DE||TNT Express Worldwide|Rua C, Edificio 77|EMMERICH|46421|DE|100|HC|N|PR|||||||N|||piecelinegoods desc|3|1.11|1.3676310000000003|N|05 Mar 2025|19:05:00]]>
+            </twoDBarcode>
+        </pieceLabelData>
+        <pieceLabelData>
+            <pieceNumber>3</pieceNumber>
+            <weightDisplay code="1.11" renderInstructions="yes">1.11kg</weightDisplay>
+            <pieceReference>
+                <![CDATA[piece3]]>
+            </pieceReference>
+            <barcode symbology="128C">123456782003136464218610</barcode>
+            <twoDBarcode symbology="pdf417">
+                <![CDATA[123456782|123456782||3||TNT Innight GmbH|Dieselstrasse 26|MUENCHEN|80267|DE||TNT Express Worldwide|Rua C, Edificio 77|EMMERICH|46421|DE|100|HC|N|PR|||||||N|||piecelinegoods desc|3|1.11|1.3676310000000003|N|05 Mar 2025|19:05:00]]>
+            </twoDBarcode>
+        </pieceLabelData>
+        <consignmentLabelData>
+            <consignmentNumber>123456782</consignmentNumber>
+            <sender>
+                <name>
+                    <![CDATA[TNT Innight GmbH]]>
+                </name>
+                <addressLine1>
+                    <![CDATA[Dieselstrasse 26]]>
+                </addressLine1>
+                <addressLine2>
+                    <![CDATA[]]>
+                </addressLine2>
+                <town>
+                    <![CDATA[MUENCHEN]]>
+                </town>
+                <province>
+                    <![CDATA[]]>
+                </province>
+                <postcode>
+                    <![CDATA[80267]]>
+                </postcode>
+                <country>
+                    <![CDATA[DE]]>
+                </country>
+            </sender>
+            <delivery>
+                <name>
+                    <![CDATA[TNT Express Worldwide]]>
+                </name>
+                <addressLine1>
+                    <![CDATA[Rua C, Edificio 77]]>
+                </addressLine1>
+                <addressLine2>
+                    <![CDATA[]]>
+                </addressLine2>
+                <town>
+                    <![CDATA[EMMERICH]]>
+                </town>
+                <province>
+                    <![CDATA[]]>
+                </province>
+                <postcode>
+                    <![CDATA[46421]]>
+                </postcode>
+                <country>
+                    <![CDATA[DE]]>
+                </country>
+            </delivery>
+            <account>
+                <accountNumber>100445</accountNumber>
+                <accountCountry>DE</accountCountry>
+            </account>
+            <totalNumberOfPieces>3</totalNumberOfPieces>
+            <product id="HC">Healthcare (ND)</product>
+            <collectionDate>2025-03-05</collectionDate>
+            <marketDisplay code="1" renderInstructions="yes">
+                <![CDATA[DOM]]>
+            </marketDisplay>
+            <transportDisplay code="3" renderInstructions="yes">
+                <![CDATA[ROAD]]>
+            </transportDisplay>
+            <freeCirculationDisplay code="" renderInstructions="highlighted">
+                <![CDATA[C]]>
+            </freeCirculationDisplay>
+            <sortSplitText>
+                <![CDATA[2]]>
+            </sortSplitText>
+            <xrayDisplay code="" renderInstructions="no"/>
+            <originDepot>
+                <depotCode>ZMU</depotCode>
+            </originDepot>
+            <transitDepots>
+                <transitDepot>
+                    <depotCode>DFT</depotCode>
+                </transitDepot>
+            </transitDepots>
+            <destinationDepot>
+                <depotCode>HMK</depotCode>
+                <dueDayOfMonth>7</dueDayOfMonth>
+                <dueDate>2025-03-07</dueDate>
+            </destinationDepot>
+            <microzone code="" renderInstructions="no"/>
+            <clusterCode>2P</clusterCode>
+            <legalComments></legalComments>
+            <cashAmount code="0.0" renderInstructions="no"/>
+            <specialInstructions></specialInstructions>
+            <bulkShipment code="" renderInstructions="no"/>
+        </consignmentLabelData>
+    </consignment>
+</labelResponse>

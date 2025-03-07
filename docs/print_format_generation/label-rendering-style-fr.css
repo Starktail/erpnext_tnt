@@ -1,0 +1,502 @@
+#boxFR {
+	position: relative;
+	top: 9px;
+	left: 9px;
+	border-collapse: collapse;
+	border-style: solid;
+	border-width: 1px;
+	text-align: center;
+	font-family: arial;
+	width: 330px;
+	height: 485px;
+}
+
+#logoFR {
+	position: absolute;
+	top: 2px;
+	left: 1px;
+    width: 112px;
+    height: 60px;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: none;
+    text-align: center;
+    padding-top: 10px;
+}
+
+#logoFR img {
+    text-align: center;
+    height: 35px;
+}
+
+#contactDetailsFR {
+    position: absolute;
+    top: 1px;
+    left: 114px;
+    width: 214px;
+    height: 40px;
+    background-color: #FFFFFF;
+    font-weight: normal;
+    text-align: left;
+}
+
+#contactDetailsTableFR tr td {
+    font-size: 10px;
+    line-height: 75%;
+}
+
+#legalCommentsFR {
+    position: absolute;
+    top: 40px;
+    left: 114px;
+    width: 214px;
+    height: 10px;
+    border-color: black;
+    font-weight: normal;
+    font-size: 7px;
+    text-align: left;
+    text-align: justify;
+}
+
+#conNumberFR {
+    position: absolute;
+    top: 53px;
+    left: 1px;
+    width: 162px;
+    height: 31px;
+    line-height: 60%;
+    padding-left: 3px;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: none;
+    border-right-color: black;
+    border-top-width: 1px;
+    border-top-style: none;
+    border-top-color: black;
+    border-bottom-width: 1px;
+    border-bottom-style: none;
+    border-bottom-color: #FFFFFF;
+    text-align: left;
+}
+
+#conNumberDetailFR {
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 100%;
+}
+
+#serviceFR {
+    position: absolute;
+    top: 51px;
+    left: 167px;
+    width: 163px;
+    height: 24px;
+    line-height: 70%;
+    background-color: #000000;
+    border-color: black;
+    border-top-width: 1px;
+    border-top-style: solid;
+    color: #FFFFFF;
+    text-align: left;
+}
+
+#serviceDetailFR {
+    font-weight: bold;
+    line-height: 100%;
+    padding-left:3px;
+}
+
+#optionFR {
+    position: absolute;
+    top: 78px;
+    left: 167px;
+    width: 163px;
+    height: 17px;
+    background-color: #000000;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-color: black;
+    text-align: left;
+    line-height: 90%;
+    color: #FFFFFF;
+}
+
+#optionDetailFR {
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 100%;
+    padding-left:3px;
+}
+
+#pieceFR {
+    position: absolute;
+    top: 79px;
+    left: 1px;
+    width: 83px;
+    height: 16px;
+    padding-left: 3px;
+    line-height: 75%;
+    background-color: #FFFFFF;
+    border-bottom-width: 1px;
+    border-bottom-style: none;
+    border-color: black;
+    text-align: left;
+}
+
+#pieceDetailFR {
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 100%;
+}
+
+#weightFR {
+    position: absolute;
+    top: 79px;
+    left: 68px;
+    width: 83px;
+    height: 16px;
+    line-height: 110%;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: none;
+    border-right-color: black;
+    border-bottom-width: 1px;
+    border-bottom-style: none;
+    border-color: black;
+    text-align: right;
+}
+
+#weightDetailFR {
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 110%;
+}
+
+#weightDetailHighlightedFR {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 110%;
+    background-color: black;
+    color: white;
+}
+
+#customerReferenceBarcodeFR {
+    position: absolute;
+    top: 99px;
+    left: 90px;
+    width: 230px;
+    height: 15px;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: none;
+    border-color: black;
+    text-align: left;
+}
+
+#customerReferenceFR {
+    position: absolute;
+    top: 115px;
+    left: 1px;
+    width: 162px;
+    height: 15px;
+    padding-left: 3px;
+    line-height: 70%;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: none;
+    border-color: black;
+    text-align: left;
+}
+
+#customerReferenceHeaderFR {
+    font-size: 10px;
+}
+
+#customerReferenceDetailFR {
+    font-size: 10px;
+    padding-left: 3px;
+}
+
+#accountNumberFR {
+    position: absolute;
+    top: 129px;
+    left: 1px;
+    width: 162px;
+    height: 15px;
+    padding-left: 3px;
+    line-height: 70%;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: none;
+    border-right-color: black;
+    border-bottom-style: none;
+    text-align: left;
+}
+
+#accountNumberHeaderFR {
+    font-size: 10px;
+}
+
+#accountNumberDetailFR {
+    padding-left: 3px;
+    font-size: 10px;
+}
+
+#deliveryDepotFR {
+    font-weight: bold;
+    position: absolute;
+    top: 135px;
+    left: 198px;
+    background-color: #FFFFFF;
+    text-align: left;
+    font-size: 64px;
+}
+
+#originAddressLabelFR {
+    position: absolute;
+    top: 147px;
+    left: 1px;
+    padding-left: 3px;
+    line-height: 90%;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: none;
+    border-bottom-width: 1px;
+    border-bottom-style: none;
+    border-top-style: none;
+    border-top-width: 1px;
+    border-color: black;
+    text-align: left;
+    font-size: 9px;
+}
+
+#originAddressFR {
+    position: absolute;
+    top: 145px;
+    left: 30px;
+    width: 162px;
+    height: 55px;
+    padding-left: 3px;
+    line-height: 70%;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: none;
+    border-bottom-width: 1px;
+    border-bottom-style: none;
+    border-top-style: none;
+    border-top-width: 1px;
+    border-color: black;
+    text-align: left;
+}
+
+#originAddressHeaderFR {
+	font-size: 8px;
+}
+
+#originAddressDetailFR {
+    font-size: 8px;
+}
+
+#deliveryAddressLabelFR {
+    position: absolute;
+    top: 204px;
+    left: 1px;
+    padding-left: 3px;
+    line-height: 90%;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: none;
+    border-bottom-width: 1px;
+    border-bottom-style: none;
+    border-color: black;
+    text-align: left;
+    font-size: 9px;
+}
+
+#deliveryAddressFR {
+    position: absolute;
+    top: 199px;
+    left: 30px;
+    width: 290px;
+    height: 105px;
+    padding-left: 3px;
+    line-height: 100%;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: none;
+    border-bottom-width: 1px;
+    border-bottom-style: none;
+    border-color: black;
+    text-align: left;
+}
+
+#deliveryAddressHeaderFR {
+    font-size: 9px;
+}
+
+#deliveryAddressDetailFR {
+    font-size: 15px;
+}
+
+#specialInstructionsFR {
+    position: absolute;
+    top: 277px;
+    left: 1px;
+    width: 325px;
+    height: 10px;
+    padding-left: 3px;
+    line-height: 100%;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: none;
+    border-bottom-width: 1px;
+    border-bottom-style: none;
+    border-color: black;
+    text-align: left;
+    font-size: 10px;
+}
+
+#contactNameFR {
+    position: absolute;
+    top: 289px;
+    left: 1px;
+    width: 162px;
+    height: 18px;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: none;
+    border-right-color: black;
+    border-bottom-style: none;
+    text-align: left;
+    padding-left: 3px;
+    font-size: 10px;
+}
+
+#contactNameHeaderFR {
+    font-size: 10px;
+}
+
+#contactNameDetailFR {
+    padding-left: 3px;
+    font-size: 10px;
+}
+
+#contactPhoneFR {
+    position: absolute;
+    top: 301px;
+    left: 1px;
+    width: 162px;
+    height: 18px;
+    background-color: #FFFFFF;
+    border-right-width: 1px;
+    border-right-style: none;
+    border-right-color: black;
+    border-bottom-style: none;
+    text-align: left;
+    padding-left: 3px;
+    font-size: 10px;
+}
+
+#contactPhoneHeaderFR {
+    font-size: 10px;
+}
+
+#contactPhoneDetailFR {
+    padding-left: 3px;
+    font-size: 10px;
+}
+
+#postcodeHeaderFR {
+    position: absolute;
+    top: 319px;
+    left: 1px;
+    width: 65px;
+    padding-left: 3px;
+    font-size: 9px;
+    border-bottom-width: 1px;
+    border-bottom-style: none;
+    border-color: black;
+    text-align: left;
+}
+
+#postcodeFR {
+    position: absolute;
+    top: 315px;
+    left: 68px;
+    width: 96px;
+    height: 29px;
+    background-color: black;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-style: none;
+    border-color: black;
+    text-align: left;
+}
+
+#postcodeDetailFR {
+    position: relative;
+    left: 3px;
+    background-color: black;
+    font-size: 23px;
+    font-weight: bold;
+    color: white;
+}
+
+#clustercodeDetailFR {
+    position: relative;
+    top: 0px;
+    left: 7px;
+    background-color: black;
+    font-size: 23px;
+    font-weight: bold;
+    color: white;
+}
+
+#pickupDateFR {
+    position: absolute;
+    top: 307px;
+    left: 170px;
+    width: 157px;
+    text-align: left;
+}
+
+#pickupDateHeaderFR {
+    font-size: 9px;
+}
+
+#pickupDateDetailFR {
+    font-size: 9px;
+}
+
+#cashAmountFR {
+    position: absolute;
+    top: 325px;
+    left: 170px;
+    width: 157px;
+    text-align: left;
+    font-size: 16px;
+}
+
+
+#barcodeFR {
+    position: absolute;
+    top: 348px;
+    left: 1px;
+    width: 327px;
+}
+
+#barcodeFR img {
+    padding-top: 10px;
+    width: 280px;
+    height: 105px;
+}
+
+#barcodeLabelFR {
+    position: absolute;
+    top: 473px;
+    left: 1px;
+    width: 327px;
+    font-size: 9px;
+}
+

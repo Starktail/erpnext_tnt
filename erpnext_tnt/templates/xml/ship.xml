@@ -12,7 +12,7 @@
          <STREETADDRESS1><![CDATA[{{ shipment.pickup_addr_doc.address_line1 }}]]></STREETADDRESS1>
          <!--Element STREETADDRESS2 is optional-->
          {% if shipment.pickup_addr_doc.address_line2 %}
-         <STREETADDRESS2><![CDATA[{ shipment.pickup_addr_doc.address_line2 }}]]></STREETADDRESS2>
+         <STREETADDRESS2><![CDATA[{{ shipment.pickup_addr_doc.address_line2 }}]]></STREETADDRESS2>
          {% endif %}
          <!--Element STREETADDRESS3 is optional-->
          <!-- <STREETADDRESS3><![CDATA[Holly Lane]]></STREETADDRESS3> -->
@@ -127,7 +127,7 @@
                <!-- <VAT/> -->
                <CONTACTNAME><![CDATA[{{ shipment.delivery_contact_doc.name }}]]></CONTACTNAME>
                <CONTACTDIALCODE><![CDATA[000]]></CONTACTDIALCODE>
-               <CONTACTTELEPHONE><![CDATA[{{ shipment.delivery_contact_doc.phone | replace("+","") }}]]></CONTACTTELEPHONE>
+               <CONTACTTELEPHONE><![CDATA[{{ (shipment.delivery_contact_doc.phone or shipment.delivery_contact_doc.mobile_no) | replace("+","") }}]]></CONTACTTELEPHONE>
                <CONTACTEMAIL><![CDATA[{{ shipment.delivery_contact_doc.email_id }}]]></CONTACTEMAIL>
             </RECEIVER>
             <!-- <DELIVERY> -->
@@ -186,12 +186,12 @@
             <!--Elements CURRENCY and GOODSVALUE identifies the value of the goods being shipped and the associated 
 				currency.  The currency is represented by the 3 digit ISO 4217 Alpha - 3 currency codes.  The value 
 				of goods must be supplied if you wish to insure the shipment. -->
-            <CURRENCY><![CDATA[{{ shipment.tnt_currency }}]]></CURRENCY>
-            <GOODSVALUE><![CDATA[{{ shipment.value_of_goods }}]]></GOODSVALUE>
+            <!-- <CURRENCY><![CDATA[{{ shipment.tnt_currency }}]]></CURRENCY>
+            <GOODSVALUE><![CDATA[{{ shipment.value_of_goods }}]]></GOODSVALUE> -->
             <!--Elements INSURANCEVALUE and INSURANCECURRENCY are optional and contains the Enhanced Liability 
 				in countries where insurance is not available.-->
-            <!-- <INSURANCEVALUE><![CDATA[150.00]]></INSURANCEVALUE>
-            <INSURANCECURRENCY><![CDATA[GBP]]></INSURANCECURRENCY> -->
+            <!-- <INSURANCEVALUE><![CDATA[2500.00]]></INSURANCEVALUE>
+            <INSURANCECURRENCY><![CDATA[EUR]]></INSURANCECURRENCY> -->
               <!--Element DIVISION is mandatory for EC version 3.1-->
               <!-- G for international shipments, D for Global link domestic, H for German domestic and 010 for UK domestic -->
             <DIVISION><![CDATA[H]]></DIVISION>
@@ -221,12 +221,12 @@
 				when entered in detail form with no more than 99 items for a consignment. -->
             {% for parcel in shipment.shipment_parcel %}
             <PACKAGE>
-               <ITEMS><![CDATA[{{ parcel.count }}]]></ITEMS>
+               <ITEMS>{{ parcel.count }}</ITEMS>
                <DESCRIPTION><![CDATA[{{ shipment.description_of_content }}]]></DESCRIPTION>
-               <LENGTH><![CDATA[{{ parcel.length / 1000 }}]]></LENGTH>
-               <HEIGHT><![CDATA[{{ parcel.height / 1000 }}]]></HEIGHT>
-               <WIDTH><![CDATA[{{ parcel.width / 1000 }}]]></WIDTH>
-               <WEIGHT><![CDATA[{{ parcel.weight }}]]></WEIGHT>
+               <LENGTH>{{ parcel.length / 1000 }}</LENGTH>
+               <HEIGHT>{{ parcel.height / 1000 }}</HEIGHT>
+               <WIDTH>{{ parcel.width / 1000 }}</WIDTH>
+               <WEIGHT>{{ parcel.weight }}</WEIGHT>
                <!-- <ARTICLE> -->
                   <!-- <ITEMS><![CDATA[1]]></ITEMS>
                   <DESCRIPTION><![CDATA[paperclips]]></DESCRIPTION>
@@ -271,25 +271,21 @@
          <CONREF><![CDATA[TESTREF1]]></CONREF>
       </SHIP> -->
 
-
-<!-- TODO: Enable PRINT -->
-
-
-      <!-- <PRINT>
+      <PRINT>
          <CONNOTE>
-            <CONREF><![CDATA[TESTREF1]]></CONREF>
+            <CONREF><![CDATA[{{ shipment.name }}-test-{{ time }}]]></CONREF>
          </CONNOTE>
          <LABEL>
-            <CONREF><![CDATA[TESTREF1]]></CONREF>
+            <CONREF><![CDATA[{{ shipment.name }}-test-{{ time }}]]></CONREF>
          </LABEL>
          <MANIFEST>
-            <CONREF><![CDATA[TESTREF1]]></CONREF>
+            <CONREF><![CDATA[{{ shipment.name }}-test-{{ time }}]]></CONREF>
          </MANIFEST>
-         <INVOICE>
+         <!-- <INVOICE>
             <CONREF><![CDATA[TESTREF1]]></CONREF>
          </INVOICE>
          <EMAILTO><![CDATA[test.name@tnt.com]]></EMAILTO>
-         <EMAILFROM><![CDATA[test.name@tnt.com]]></EMAILFROM>
-      </PRINT> -->
+         <EMAILFROM><![CDATA[test.name@tnt.com]]></EMAILFROM> -->
+      </PRINT>
    </ACTIVITY>
 </ESHIPPER>

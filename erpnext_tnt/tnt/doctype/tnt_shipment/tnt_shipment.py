@@ -4,8 +4,9 @@
 import json
 
 import frappe
-from frappe import _
+from frappe import ValidationError, _
 from frappe.model.document import Document
+from requests.auth import HTTPBasicAuth
 
 from erpnext_tnt.tnt.tnt_api import TNTAPI
 
@@ -57,12 +58,17 @@ def book_tnt_shipment(tnt_shipment_name: str, service_data: str):
 	tnt_shipment.save()
 	tnt_shipment.post_to_tnt_express_api()
 
+	# Get the labels
+	tnt_shipment.get_labels()
+
 	return tnt_shipment
 
 
 class TNTShipment(Document):
 
 	erpnext_shipment_ext = None
+	shipping_auth: HTTPBasicAuth = None
+	label_auth: HTTPBasicAuth = None
 
 	def _raise_error(self, err: Exception, save_to_doc=True):
 		frappe.log_error(_("TNT API Error for TNT Shipment {0}").format(self.name), err, "TNT Shipment", self.name)
@@ -87,6 +93,8 @@ class TNTShipment(Document):
 
 	def _get_settings(self):
 		self.tnt_settings = frappe.get_cached_doc("TNT Settings")
+		self.shipping_auth = HTTPBasicAuth(self.tnt_settings.shipping_api_username, self.tnt_settings.get_password("shipping_api_password"))
+		self.label_auth = HTTPBasicAuth(self.tnt_settings.label_api_username, self.tnt_settings.get_password("label_api_password"))
 
 	@frappe.whitelist()
 	def post_to_tnt_express_api(self):
@@ -94,6 +102,8 @@ class TNTShipment(Document):
 		Post the shipment to the TNT Express API
 		"""
 		self._get_settings()
+		if not self.tnt_settings.shipping_enabled:
+			raise ValidationError(_("Shipping is not enabled in TNT Settings"))
 		self.load_linked_erpnext_shipment()
 		self.validate_linked_erpnext_shipment()
 		self.check_if_shipment_contains_hazardous_items()
@@ -113,7 +123,7 @@ class TNTShipment(Document):
 			},
 		)
 
-		tnt_api = TNTAPI(dt=self.doctype, dn=self.name)
+		tnt_api = TNTAPI(dt=self.doctype, dn=self.name, auth=self.shipping_auth)
 		result = tnt_api.request_shipping(rendered_xml)
 
 		if result.error:
@@ -122,7 +132,7 @@ class TNTShipment(Document):
 		self.access_code = result.data["access_code"]
 		tnt_shipment = result.data["tnt_shipment"]
 		self.tnt_shipment_id = tnt_shipment["tnt_shipment_id"]
-		self.tracking_number = tnt_shipment["tnt_shipment_id"]
+		self.tracking_number = result.data["access_code"]
 		self.booking_reference = tnt_shipment["tnt_booking_reference"]
 		self.shipment_data = json.dumps(tnt_shipment)
 		self.error = result.raw_response_text
@@ -133,15 +143,67 @@ class TNTShipment(Document):
 		try:
 			shipment.db_set(
 				{
-					"shipment_id": tnt_shipment["tnt_shipment_id"],
+					"shipment_id": tnt_shipment["access_code"],
 					"carrier": "TNT Express",
 				}
 			)
 			if len(shipment.shipment_delivery_note) > 0:
-				update_delivery_notes(delivery_note_names=[row.delivery_note for row in shipment.shipment_delivery_note], tracking_number=tnt_shipment["tnt_shipment_id"])
+				update_delivery_notes(delivery_note_names=[row.delivery_note for row in shipment.shipment_delivery_note], tracking_number=tnt_shipment["access_code"])
 		except Exception as e:
 			pass
 
+		self.save()
+
+	@frappe.whitelist()
+	def get_labels(self):
+		"""
+		Get the label XML data from the TNT Express API
+		"""
+		if not self.tnt_settings.labels_enabled:
+			pass
+
+		tnt_api = TNTAPI(dt=self.doctype, dn=self.name, auth=self.shipping_auth, access_code=self.access_code)
+
+		# TNT Address Label
+		result = tnt_api.request_label_data(command_keyword="GET_LABEL")
+		if result.error:
+			return self._raise_error(result.error)
+		self.label_data = result.data
+		self.save()
+
+		# TNT Consignment Note
+		result = tnt_api.request_label_data(command_keyword="GET_CONNOTE")
+		if result.error:
+			return self._raise_error(result.error)
+		self.connote_data = result.data
+		self.save()
+
+		# TNT Manifest
+		result = tnt_api.request_label_data(command_keyword="GET_MANIFEST")
+		if result.error:
+			return self._raise_error(result.error)
+		self.manifest_data = result.data
+		self.save()
+
+		# TNT Routing Label
+		rendered_xml = frappe.render_template(
+			"erpnext_tnt/templates/xml/routing_label.xml",
+			context={
+				"tnt_account": self.tnt_settings.tnt_account,
+				"vat_number": self.tnt_settings.company_vat_number,
+				"is_hazardous": self.is_hazardous,
+				"shipment": self.erpnext_shipment_ext,
+				"consignment_number": self.access_code,
+			},
+		)
+
+		tnt_api = TNTAPI(dt=self.doctype, dn=self.name, auth=self.label_auth)
+		result = tnt_api.request_routing_label_data(rendered_xml)
+
+		if result.error:
+			return self._raise_error(result.error)
+
+		self.routing_label_data = result.data
 		self.save()
 
 	def load_linked_erpnext_shipment(self):
@@ -209,12 +271,15 @@ class TNTShipment(Document):
 					frappe.throw(_("Missing required field: {0} for Address '{1}'").format(frappe.bold(label), frappe.bold(addr.name)))
 
 		# Validate required fields on contacts
-		required_contact_fields = ["phone", "email_id"]
 		contact = self.erpnext_shipment_ext.delivery_contact_doc
-		for field_name in required_contact_fields:
-			if not contact.get(field_name):
-				label = get_field_label(contact, field_name)
-				frappe.throw(_("Missing required field: {0} for Contact '{1}'").format(frappe.bold(label), frappe.bold(contact.name)))
+		if not contact.get("email_id"):
+			label = get_field_label(contact, "email_id")
+			frappe.throw(_("Missing required field: {0} for Contact '{1}'").format(frappe.bold(label), frappe.bold(contact.name)))
+
+		# Validate that either phone or mobile_no is set on Contact
+		if not contact.get("phone") and not contact.get("mobile_no"):
+			label = get_field_label(contact, "phone") + "/" + get_field_label(contact, "mobile_no")
+			frappe.throw(_("Missing required field: {0} for Contact '{1}'").format(frappe.bold(label), frappe.bold(contact.name)))
 
 	def get_company_contact(self):
 		user = self.erpnext_shipment_ext.pickup_contact_person
@@ -238,7 +303,12 @@ class TNTShipment(Document):
 
 		# Price check for hazardous shipments are not supported, so just return a list of standard rates
 		if self.is_hazardous:
-			return {"tnt_shipment": self.name, "is_hazardous": True, "rates": [{"product": {"id": service_code, "productDesc": service_descr}} for service_code, service_descr in TNT_SERVICES]}
+			return {
+				"tnt_shipment": self.name,
+				"is_hazardous": True,
+				"default_service": self.tnt_settings.default_service_code,
+				"rates": [{"product": {"id": service_code, "productDesc": service_descr}} for service_code, service_descr in TNT_SERVICES],
+			}
 
 		rendered_xml = frappe.render_template(
 			"erpnext_tnt/templates/xml/price_check.xml",
@@ -253,7 +323,7 @@ class TNTShipment(Document):
 			},
 		)
 
-		tnt_api = TNTAPI(dt=self.doctype, dn=self.name)
+		tnt_api = TNTAPI(dt=self.doctype, dn=self.name, auth=self.shipping_auth)
 		result = tnt_api.request_rates(rendered_xml)
 
 		if result.error:
@@ -261,6 +331,7 @@ class TNTShipment(Document):
 
 		result.data["tnt_shipment"] = self.name
 		result.data["is_hazardous"] = self.is_hazardous
+		result.data["default_service"] = self.tnt_settings.default_service_code
 		return result.data
 
 
@@ -271,3 +342,21 @@ def update_delivery_notes(delivery_note_names, tracking_number: str, carrier="TN
 		dl_doc = frappe.get_doc("Delivery Note", delivery_note)
 		dl_doc.db_set("parcel_service", carrier)
 		dl_doc.db_set("tracking_number", tracking_number)
+
+
+def get_label_data(tnt_shipment_name: str, field_name: str):
+	"""
+	Get the label data in dict format. Intended as a Jinja method in Print Formats
+
+	field_name should be one of:
+	        label_data
+	        connote_data
+	        manifest_data
+	        routing_label_data
+	"""
+	if field_name not in ["label_data", "connote_data", "manifest_data", "routing_label_data"]:
+		raise ValueError()
+
+	tnt_shipment = frappe.get_doc("TNT Shipment", tnt_shipment_name)
+	string_data = getattr(tnt_shipment, field_name)
+	return json.loads(string_data)

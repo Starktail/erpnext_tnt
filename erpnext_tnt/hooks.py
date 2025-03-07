@@ -78,6 +78,7 @@ doctype_js = {"Shipment": "public/js/shipment.js"}
 # 	"methods": "erpnext_tnt.utils.jinja_methods",
 # 	"filters": "erpnext_tnt.utils.jinja_filters"
 # }
+jinja = {"methods": ["erpnext_tnt.tnt.doctype.tnt_shipment.tnt_shipment.get_label_data"]}
 
 # Installation
 # ------------
@@ -174,9 +175,7 @@ before_tests = "erpnext_tnt.utils.before_tests"
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "erpnext_tnt.event.get_events"
-# }
+override_whitelisted_methods = {"frappe.utils.print_format.download_pdf": "erpnext_tnt.overrides.printing.print_format.custom_download_pdf"}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,

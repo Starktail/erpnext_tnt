@@ -1,0 +1,388 @@
+#box {
+	position: relative;
+	top: 9px;
+	left: 9px;
+	border-collapse: collapse;
+	border-style: solid;
+	border-width: 1px;
+	text-align: center;
+	font-family: arial;
+	width: 330px;
+	height: 485px;
+}
+
+#logo {
+	position: absolute;
+	top: 11px;
+	left: 1px;
+    background-color: #FFFFFF;
+}
+
+#logo img {
+    text-align: center;
+    height: 35px;
+}
+
+#marketAndTransportType {
+    position: absolute;
+    top: 1px;
+    left: 105px;
+    width: 138px;
+    background-color: #FFFFFF;
+    font-weight: plain;
+    font-size: 18px;
+    text-align: left;
+    line-height: 90%;
+}
+
+#xray {
+    position: absolute;
+    top: 1px;
+    left: 186px;
+    width: 138px;
+    font-weight: bold;
+    font-size: 18px;
+    text-align: left;
+    line-height: 90%;
+}
+
+#hazardous {
+    position: absolute;
+    top: 20px;
+    left: 105px;
+    width: 141px;
+    height: 25px; 
+    padding-top: 3px;
+    padding-bottom: 3px;
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+    background-color: #000000;
+    color: #FFFFFF;
+}
+
+#freeCirculationIndicator {
+    position: absolute;
+    top: 0px;
+    left: 254px;
+    width: 39px;
+    height: 48px;
+    font-weight: bold;
+    font-size: 45px;
+    text-align: center;
+    padding-right: 1px;
+    line-height: 100%;
+    padding-top: 3px;
+}
+
+#sortSplitIndicator {
+    position: absolute;
+    top: 1px;
+    left: 294px;
+    width: 39px;
+    height: 48px;
+    border-color: black;
+    font-weight: bold;
+    font-size: 45px;
+    text-align: center;
+    line-height: 100%;
+    padding-top: 3px;
+}
+
+#twoDBarcode {
+    position: absolute;
+    top: 55px;
+    left: 7px;
+}
+
+#twoDBarcodeImg {
+    width: 315px;
+    height: 75px;
+}
+
+#conNumber {
+    position: absolute;
+    top: 133px;
+    left: 1px;
+    width: 162px;
+    height: 32px;
+    padding-left: 3px;
+    background-color: #FFFFFF;
+    text-align: left;
+}
+
+#conNumberHeader {
+    float:left;
+    font-size: 10px;
+}
+
+#conNumberDetail {
+    font-weight: bold;
+    font-size: 24px;
+    padding-left: 40px;
+    padding-top: 1px;
+}
+
+#piece {
+    position: absolute;
+    top: 159px;
+    left: 1px;
+    width: 83px;
+    height: 31px;
+    padding-left: 3px;
+    line-height: 75%;
+    background-color: #FFFFFF;
+    text-align: left;
+}
+
+#pieceHeader {
+    font-size: 10px;
+}
+
+#pieceDetail {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 100%;
+}
+
+#weight {
+    position: absolute;
+    top: 159px;
+    left: 87px;
+    width: 79px;
+    height: 31px;
+    line-height: 75%;
+    background-color: #FFFFFF;
+    text-align: left;
+}
+
+#weightHeader {
+    font-size: 10px;
+}
+
+#weightDetail {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 100%;
+}
+
+#weightDetailHighlighted {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 100%;
+    background-color: black;
+    color: white;
+}
+
+#service {
+    position: absolute;
+    top: 191px;
+    left: 0px;
+    width: 163px;
+    height: 24px;
+    line-height: 70%;
+    background-color: #000000;
+    color: #FFFFFF;
+    text-align: left;
+    padding-left: 4px;
+    padding-top: 2px;
+}
+
+#serviceDetail {
+    font-weight: bold;
+    line-height: 100%;
+}
+
+#option {
+    position: absolute;
+    top: 217px;
+    left: 0px;
+    width: 163px;
+    height: 18px;
+    line-height: 75%;
+    background-color: #000000;
+    text-align: left;
+    color: #FFFFFF;
+    padding-left: 4px;
+    padding-top: 1px
+}
+
+#optionDetail {
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 100%;
+}
+
+#originDepot {
+    position: absolute;
+    top: 133px;
+    left: 168px;
+    width: 87px;
+    height: 32px;
+    padding-left: 3px;
+    text-align: left;
+}
+
+#originDepotHeader {
+    float:left;
+    font-size: 9px;
+    padding-top: 1px;
+}
+
+#originDepotDetail {
+    font-size: 24px;
+    font-weight: bold;
+    padding-left: 3px;
+}
+
+#pickupDate {
+    position: absolute;
+    top: 131px;
+    left: 262px;
+    text-align: left;
+    line-height: 70%;
+}
+
+#pickupDateHeader {
+    font-size: 10px;
+}
+
+#pickupDateDetail {
+    font-size: 10px;
+}
+
+#deliveryAddress {
+    position: absolute;
+    top: 237px;
+    left: 1px;
+    width: 162px;
+    height: 70px;
+    padding-left: 3px;
+    line-height: 70%;
+    background-color: #FFFFFF;
+    text-align: left;
+}
+
+#deliveryAddressHeader {
+    font-size: 9px;
+}
+
+#deliveryAddressDetail {
+    font-size: 10px;
+    padding-left: 4px;
+}
+
+#routing {
+    position: absolute;
+    top: 162px;
+    left: 168px;
+    padding-left: 3px;
+    background-color: #FFFFFF;
+    text-align: left;
+}
+
+#routingHeader {
+	float:left;
+    font-size: 10px;
+}
+
+#routingDetail {
+    font-size: 32px;
+    font-weight: bold;
+    padding-left: 40px;
+    line-height: 90%;
+}
+
+#sort {
+    position: absolute;
+    top: 279px;
+    left: 167px;
+    padding-left: 3px;
+    background-color: #FFFFFF;
+    text-align: left;
+}
+
+#sortHeader {
+    float:left;
+    font-size: 10px;
+    padding-top: 4px;
+}
+
+#sortDetail {
+    font-size: 30px;
+    font-weight: bold;
+    padding-left: 8px;
+}
+
+#postcode {
+    position: absolute;
+    top: 309px;
+    left: 0px;
+    width: 167px;
+    height: 38px;
+    background-color: black;
+    text-align: left;
+    ling-height: 50%;
+}
+
+#postcodeDetail {
+    position: relative;
+    top: 0px;
+    left: 3px;
+    background-color: black;
+    font-size: 31px;
+    font-weight: bold;
+    color: white;
+}
+
+#clustercodeDetail {
+    position: relative;
+    top: 0px;
+    left: 7px;
+    font-size: 32px;
+    font-weight: bold;
+    color: white;
+}
+
+#destinationDepot {
+}
+
+#destinationDepotHeader {
+    position: absolute;
+    top: 315px;
+    left: 167px;
+    padding-left: 3px;
+    text-align: left;
+    font-size: 10px;
+}
+
+#destinationDepotDetail {
+    position: absolute;
+    top: 310px;
+    left: 203px;
+    text-align: left;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+#barcode {
+    position: absolute;
+    top: 348px;
+    left: 1px;
+    width: 327px;
+}
+
+#barcode img {
+    padding-top: 10px;
+    width: 326px;
+    height: 105px;
+}
+
+#barcodeLabel {
+    position: absolute;
+    top: 473px;
+    left: 1px;
+    width: 327px;
+    font-size: 9px;
+}
+

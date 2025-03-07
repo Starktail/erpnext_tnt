@@ -45,6 +45,7 @@ frappe.ui.form.on("Shipment", {
 function select_from_available_tnt_services(frm, tnt_data) {
 	// Extract the available rates from the provided object
 	let rates = tnt_data.rates;
+	const default_service = tnt_data.default_service
 
     // Convert the rate values to numbers
     if (!tnt_data.is_hazardous){
@@ -63,6 +64,19 @@ function select_from_available_tnt_services(frm, tnt_data) {
             };
         });
     }
+
+	// Prioritise the default service (list it at the top)
+	if (default_service){
+		rates.sort((a, b) => {
+		if (a.product.id === default_service && b.product.id !== default_service) {
+			return -1;
+		}
+		if (b.product.id === default_service && a.product.id !== default_service) {
+			return 1;
+		}
+		return 0;
+		});
+	}
 
 	// Create a dialog for selecting a rate
 	const dialog = new frappe.ui.Dialog({
@@ -94,7 +108,8 @@ function select_from_available_tnt_services(frm, tnt_data) {
 				__("Price Excl VAT"),
 				__("VAT Amount")
 			],
-			data: rates
+			data: rates,
+			default_service: default_service
 		})
 	);
 

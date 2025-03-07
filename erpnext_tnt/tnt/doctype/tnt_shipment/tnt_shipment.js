@@ -40,7 +40,6 @@ frappe.ui.form.on("TNT Shipment", {
                             message:__('Completed successfully'),
                             indicator:'green'
                         }, 5);
-                        console.log(r.message);
                     },
                     error: (r) => {
                         frappe.dom.unfreeze();
