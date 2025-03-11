@@ -131,9 +131,9 @@ class TNTAPI:
 		if root.tag == "document" and (create_element := root.find("CREATE")) and create_element.find("SUCCESS").text == "Y" and (book_element := root.find("BOOK")):
 			rate_element = root.find("RATE")
 
-			service_element = rate_element.find("SERVICE")
-			currency_element = rate_element.find("CURRENCY")
-			chid_rate_element = rate_element.find("RATE")
+			service_element = rate_element.find("SERVICE") if rate_element else None
+			currency_element = rate_element.find("CURRENCY") if rate_element else None
+			chid_rate_element = rate_element.find("RATE") if rate_element else None
 			tnt_shipment = {
 				"tnt_shipment_id": create_element.find("CONNUMBER").text,
 				"tnt_service": service_element.text if service_element else None,
