@@ -56,11 +56,11 @@
             <country><![CDATA[{{ shipment.delivery_addr_doc.country_code | upper }}]]></country>
 		</delivery>
 		<product>
-			<lineOfBusiness>1</lineOfBusiness>
+			<lineOfBusiness><![CDATA[{{ product_line_of_business }}]]></lineOfBusiness>
 			<groupId>0</groupId>
 			<subGroupId>0</subGroupId>
-			<id>HC</id>
-			<type>N</type>
+			<id><![CDATA[{{ product_id }}]]></id>
+			<type><![CDATA[{{ product_type }}]]></type>
 			<!--Element option is optional, maxOccurs=5-->
             {% if is_hazardous %}
                 <option id="HZ"><![CDATA[HZ]]></option>

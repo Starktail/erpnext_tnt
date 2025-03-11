@@ -186,6 +186,7 @@ class TNTShipment(Document):
 		self.save()
 
 		# TNT Routing Label
+		product_line_of_business, product_id, product_type = get_product_details(service_code=self.tnt_service)
 		rendered_xml = frappe.render_template(
 			"erpnext_tnt/templates/xml/routing_label.xml",
 			context={
@@ -194,6 +195,9 @@ class TNTShipment(Document):
 				"is_hazardous": self.is_hazardous,
 				"shipment": self.erpnext_shipment_ext,
 				"consignment_number": self.access_code,
+				"product_line_of_business": product_line_of_business,
+				"product_id": product_id,
+				"product_type": product_type,
 			},
 		)
 
@@ -360,3 +364,23 @@ def get_label_data(tnt_shipment_name: str, field_name: str):
 	tnt_shipment = frappe.get_doc("TNT Shipment", tnt_shipment_name)
 	string_data = getattr(tnt_shipment, field_name)
 	return json.loads(string_data)
+
+
+def get_product_details(service_code):
+	"""
+	Product Details map as extracted from docs/ExpressLabel_TNT-Productcodes.doc
+	"""
+	PRODUCT_DETAILS = {
+		"08D": ("1", "EP08", "D"),
+		"09D": ("1", "EP09", "D"),
+		"10D": ("1", "EP10", "D"),
+		"12D": ("1", "EP12", "D"),
+		"15D": ("1", "EP", "D"),
+		"08N": ("1", "EP08", "N"),
+		"09N": ("1", "EP09", "N"),
+		"10N": ("1", "EP10", "N"),
+		"12N": ("1", "EP12", "N"),
+		"15N": ("1", "EP", "N"),
+	}
+
+	return PRODUCT_DETAILS[service_code]
