@@ -56,10 +56,11 @@ def book_tnt_shipment(tnt_shipment_name: str, service_data: str):
 	service_data = json.loads(service_data)
 	tnt_shipment.tnt_service = service_data["product"]["id"]
 	tnt_shipment.save()
-	tnt_shipment.post_to_tnt_express_api()
+	err = tnt_shipment.post_to_tnt_express_api()
 
 	# Get the labels
-	tnt_shipment.get_labels()
+	if not err:
+		tnt_shipment.get_labels()
 
 	return tnt_shipment
 
@@ -132,7 +133,7 @@ class TNTShipment(Document):
 		self.access_code = result.data["access_code"]
 		tnt_shipment = result.data["tnt_shipment"]
 		self.tnt_shipment_id = tnt_shipment["tnt_shipment_id"]
-		self.tracking_number = result.data["access_code"]
+		self.tracking_number = tnt_shipment["tnt_shipment_id"][2:-2]
 		self.booking_reference = tnt_shipment["tnt_booking_reference"]
 		self.shipment_data = json.dumps(tnt_shipment)
 		self.error = result.raw_response_text
@@ -143,12 +144,12 @@ class TNTShipment(Document):
 		try:
 			shipment.db_set(
 				{
-					"shipment_id": tnt_shipment["access_code"],
+					"shipment_id": tnt_shipment["tnt_shipment_id"][2:-2],
 					"carrier": "TNT Express",
 				}
 			)
 			if len(shipment.shipment_delivery_note) > 0:
-				update_delivery_notes(delivery_note_names=[row.delivery_note for row in shipment.shipment_delivery_note], tracking_number=tnt_shipment["access_code"])
+				update_delivery_notes(delivery_note_names=[row.delivery_note for row in shipment.shipment_delivery_note], tracking_number=tnt_shipment["tnt_shipment_id"][2:-2])
 		except Exception as e:
 			pass
 
@@ -194,7 +195,7 @@ class TNTShipment(Document):
 				"vat_number": self.tnt_settings.company_vat_number,
 				"is_hazardous": self.is_hazardous,
 				"shipment": self.erpnext_shipment_ext,
-				"consignment_number": self.access_code,
+				"consignment_number": self.tnt_shipment_id[2:-2],  # e.g. GE981432666DE = 981432666
 				"product_line_of_business": product_line_of_business,
 				"product_id": product_id,
 				"product_type": product_type,
