@@ -130,9 +130,7 @@ jinja = {"methods": ["erpnext_tnt.tnt.doctype.tnt_shipment.tnt_shipment.get_labe
 # ---------------
 # Override standard doctype classes
 
-# override_doctype_class = {
-# 	"ToDo": "custom_app.overrides.CustomToDo"
-# }
+override_doctype_class = {"Shipment": "erpnext_tnt.overrides.stock.shipment.CustomShipment"}
 
 # Document Events
 # ---------------
@@ -249,7 +247,7 @@ fixtures = [
 			[
 				"name",
 				"in",
-				("Item-custom_tnt_is_hazardous"),
+				("Item-custom_tnt_is_hazardous", "Shipment-custom_tnt_is_hazardous", "Shipment-custom_tnt_hazardous_weight"),
 			]
 		],
 	},
@@ -261,3 +259,7 @@ fixtures = [
 		],
 	},
 ]
+
+default_log_clearing_doctypes = {
+	"TNT Request Log": 30,
+}

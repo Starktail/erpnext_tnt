@@ -83,14 +83,7 @@ class TNTShipment(Document):
 		"""
 		Check if the linked shipment contains any hazardous items
 		"""
-		self.is_hazardous = False
-		shipment = frappe.get_doc("Shipment", self.shipment)
-		for dn in shipment.shipment_delivery_note:
-			delivery_note = frappe.get_doc("Delivery Note", dn.delivery_note)
-			for row in delivery_note.items:
-				if frappe.get_value("Item", row.item_code, "custom_tnt_is_hazardous"):
-					self.is_hazardous = True
-					break
+		self.is_hazardous = frappe.get_value("Shipment", self.shipment, "custom_tnt_is_hazardous")
 
 	def _get_settings(self):
 		self.tnt_settings = frappe.get_cached_doc("TNT Settings")
