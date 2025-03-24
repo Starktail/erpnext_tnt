@@ -261,3 +261,7 @@ fixtures = [
 		],
 	},
 ]
+
+default_log_clearing_doctypes = {
+	"TNT Request Log": 30,
+}
