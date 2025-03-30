@@ -224,30 +224,36 @@ class TNTAPI:
 		except Exception as e:
 			return TNTAPIResult(error=e)
 
+		# Step 1: decode the full content as UTF-8
+		xml = get_response.content.decode("utf-8")
+
+		# Step 2: fix mojibake by re-encoding as Latin-1 and decoding back to UTF-8
+		content = xml.encode("latin1").decode("utf-8")
+
 		# Check if result is string or XML, we expect XML
 		try:
-			root = ET.fromstring(get_response.text)
+			root = ET.fromstring(content)
 		except ET.ParseError as e:
 			return TNTAPIResult(TNTAPIUnexpectedResponseError())
 
 		# Check for errors in the response
 		if root.tag in ["parse_error", "runtime_error"]:
-			return TNTAPIResult(error=TNTAPIError(get_response.text))
+			return TNTAPIResult(error=TNTAPIError(content))
 		if root.tag == "document" and root.find("ERROR"):
-			return TNTAPIResult(error=TNTAPIError(get_response.text))
+			return TNTAPIResult(error=TNTAPIError(content))
 
 		# Validate response
 		if root.tag == "CONSIGNMENTBATCH":
-			result_data = parse_xml_to_dict(get_response.text)
-			self.result = TNTAPIResult(raw_response_text=get_response.text, data=result_data)
+			result_data = parse_xml_to_dict(content)
+			self.result = TNTAPIResult(raw_response_text=content, data=result_data)
 			return self.result
 		else:
-			return TNTAPIResult(error=TNTAPIError(get_response.text))
+			return TNTAPIResult(error=TNTAPIError(content))
 
 	def request_routing_label_data(self, rendered_xml: str) -> TNTAPIResult:
 		url = self.tnt_settings.express_label_endpoint
 
-		# Get the Rates using the TNT API
+		# Request Routing label data using the TNT API
 		headers, payload, auth = self._build_xml_request(url, rendered_xml, use_form_data=False)
 		try:
 			get_response = self._request("POST", url, headers=headers, auth=auth, data=payload)
