@@ -88,7 +88,7 @@
                 <pieces>
                     <!--Element sequenceNumbers, maxOccurs=unbounded-->
                     <sequenceNumbers>1</sequenceNumbers>
-                    <pieceReference>piece1</pieceReference>
+                    <pieceReference><![CDATA[{{ shipment.description_of_content }}]]></pieceReference>
                 </pieces>
             </pieceLine>
         {% endfor %}
