@@ -63,7 +63,7 @@
 			<type><![CDATA[{{ product_type }}]]></type>
 			<!--Element option is optional, maxOccurs=5-->
             {% if is_hazardous %}
-                <option id="HZ"><![CDATA[HZ]]></option>
+                <option id="LB"><![CDATA[LB]]></option>
             {% endif %}
 		</product>
 		<account>

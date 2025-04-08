@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TrackRequest>
+	<SearchCriteria>
+		<ConsignmentNumber>{{ consignment_number }}</ConsignmentNumber>
+	</SearchCriteria>
+	<LevelOfDetail>
+		<Summary/>
+	</LevelOfDetail>
+</TrackRequest>

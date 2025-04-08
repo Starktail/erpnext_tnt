@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import json
+from typing import Dict
 
 import frappe
 from frappe import ValidationError, _
@@ -90,7 +91,6 @@ class TNTShipment(Document):
 		self.shipping_auth = HTTPBasicAuth(self.tnt_settings.shipping_api_username, self.tnt_settings.get_password("shipping_api_password"))
 		self.label_auth = HTTPBasicAuth(self.tnt_settings.label_api_username, self.tnt_settings.get_password("label_api_password"))
 
-	@frappe.whitelist()
 	def post_to_tnt_express_api(self):
 		"""
 		Post the shipment to the TNT Express API
@@ -148,7 +148,6 @@ class TNTShipment(Document):
 
 		self.save()
 
-	@frappe.whitelist()
 	def get_labels(self):
 		"""
 		Get the label XML data from the TNT Express API
@@ -289,7 +288,6 @@ class TNTShipment(Document):
 			)
 		self.erpnext_shipment_ext.pickup_contact_person_dict = company_contact
 
-	@frappe.whitelist()
 	def fetch_rates_from_tnt_express_api(self):
 		"""
 		Fetch shipping rates from the TNT Express API
@@ -331,6 +329,44 @@ class TNTShipment(Document):
 		result.data["is_hazardous"] = self.is_hazardous
 		result.data["default_service"] = self.tnt_settings.default_service_code
 		return result.data
+
+	@frappe.whitelist()
+	def fetch_tracking_tnt_express_api(self) -> Dict:
+		"""
+		Fetch tracking info from the TNT Express API
+		"""
+		self._get_settings()
+
+		rendered_xml = frappe.render_template(
+			"erpnext_tnt/templates/xml/track.xml",
+			context={
+				"consignment_number": self.tnt_shipment_id[2:-2],  # e.g. GE981432666DE = 981432666
+			},
+		)
+
+		tnt_api = TNTAPI(dt=self.doctype, dn=self.name, auth=self.shipping_auth)
+		result = tnt_api.request_tracking_data(rendered_xml)
+
+		if result.error:
+			return self._raise_error(result.error)
+
+		# TNT API returns a list of consignment data in some scenarios, but we only need the first one
+		consignment_data = result.data["TrackResponse"]["Consignment"][0] if type(result.data["TrackResponse"]["Consignment"]) is list else result.data["TrackResponse"]["Consignment"]
+		if consignment_data["SummaryCode"] == "EXC":
+			self.status = "Exception"
+		elif consignment_data["SummaryCode"] == "INT":
+			self.status = "In Transit"
+		elif consignment_data["SummaryCode"] == "DEL":
+			self.status = "Delivered"
+
+		self.save()
+
+		return {
+			"awb_number": self.tnt_shipment_id[2:-2],  # e.g. GE981432666DE = 981432666
+			"tracking_status": self.status,
+			"tracking_status_info": consignment_data["DeliveryDate"]["#text"] if "DeliveryDate" in consignment_data else "",
+			"tracking_url": None,
+		}
 
 
 def update_delivery_notes(delivery_note_names, tracking_number: str, carrier="TNT Express"):

@@ -7,6 +7,21 @@ frappe.ui.form.on("Shipment", {
                 return frm.events.fetch_tnt_shipping_rates(frm);
             });
         }
+		if (frm.doc.shipment_id) {
+			if (frm.doc.tracking_status != "Delivered") {
+				frm.add_custom_button(
+					__("Update TNT Tracking"),
+					function () {
+						return frm.events.update_tnt_tracking(
+							frm,
+							frm.doc.service_provider,
+							frm.doc.shipment_id
+						);
+					},
+					__("Tools")
+				);
+			}
+		}
 	},
 
 	fetch_tnt_shipping_rates: function (frm) {
@@ -37,6 +52,28 @@ frappe.ui.form.on("Shipment", {
 		} else {
 			frappe.throw(__("Shipment already created"));
 		}
+	},
+
+	update_tnt_tracking: function (frm, service_provider, shipment_id) {
+		let delivery_notes = [];
+		(frm.doc.shipment_delivery_note || []).forEach((d) => {
+			delivery_notes.push(d.delivery_note);
+		});
+		frappe.call({
+			method: "erpnext_tnt.tnt.tasks.update_tnt_tracking",
+			freeze: true,
+			freeze_message: __("Updating TNT Tracking"),
+			args: {
+				shipment: frm.doc.name,
+				shipment_id: shipment_id,
+				delivery_notes: delivery_notes,
+			},
+			callback: function (r) {
+				if (!r.exc) {
+					frm.reload_doc();
+				}
+			},
+		});
 	},
 
 });
