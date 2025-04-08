@@ -48,7 +48,7 @@ class TNTAPI:
 			response_data[elem.tag] = elem.text
 		return response_data
 
-	def _request(self, method, url, params=None, data=None, headers=None, auth=None) -> str:
+	def _request(self, method, url, params=None, data=None, headers=None, auth=None, data_to_log=None) -> str:
 		result = None
 		parsed_url = urllib.parse.urlparse(url)
 
@@ -60,7 +60,7 @@ class TNTAPI:
 					endpoint=parsed_url.path,
 					request_method=method,
 					params=params,
-					data=data,
+					data=data_to_log or data,
 					res=result,
 					traceback="".join(traceback.format_stack(limit=8)),
 					reference_doctype=self.dt,
@@ -255,8 +255,12 @@ class TNTAPI:
 
 		# Request Routing label data using the TNT API
 		headers, payload, auth = self._build_xml_request(url, rendered_xml, use_form_data=False)
+
+		# Encoding weirdness with TNT API
+		encoded_payload = payload.encode("utf-8")
+
 		try:
-			get_response = self._request("POST", url, headers=headers, auth=auth, data=payload)
+			get_response = self._request("POST", url, headers=headers, auth=auth, data=encoded_payload, data_to_log=payload)
 		except Exception as e:
 			return TNTAPIResult(error=e)
 
