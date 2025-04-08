@@ -282,6 +282,38 @@ class TNTAPI:
 		else:
 			return TNTAPIResult(error=TNTAPIError(get_response.text))
 
+	def request_tracking_data(self, rendered_xml: str) -> TNTAPIResult:
+		url = self.tnt_settings.express_connect_tracking_endpoint
+
+		# Request Tracking data using the TNT API
+		headers, payload, auth = self._build_xml_request(url, rendered_xml)
+
+		# Encoding weirdness with TNT API
+		# encoded_payload = payload.encode("utf-8")
+
+		try:
+			get_response = self._request("POST", url, headers=headers, auth=auth, data=payload)
+		except Exception as e:
+			return TNTAPIResult(error=e)
+
+		# Check if result is string or XML, we expect XML
+		try:
+			root = ET.fromstring(get_response.text)
+		except ET.ParseError as e:
+			return TNTAPIResult(TNTAPIUnexpectedResponseError())
+
+		# Check for errors in the response
+		if root.tag in ["parse_error", "runtime_error"] or (root.tag == "labelResponse" and root.find("brokenRules")):
+			return TNTAPIResult(error=TNTAPIError(get_response.text))
+
+		# Validate response
+		if root.tag == "TrackResponse" and root.find("Consignment"):
+			result_data = parse_xml_to_dict(get_response.text)
+			self.result = TNTAPIResult(raw_response_text=get_response.text, data=result_data)
+			return self.result
+		else:
+			return TNTAPIResult(error=TNTAPIError(get_response.text))
+
 
 def log_tnt_request(
 	url: str,

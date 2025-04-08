@@ -70,7 +70,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Draft\nCreated\nLabel Generated\nDispatched\nDelivered\nError",
+   "options": "Draft\nCreated\nError\nIn Transit\nDelivered\nException",
    "read_only": 1
   },
   {
@@ -159,7 +159,7 @@
    "link_fieldname": "reference_docname"
   }
  ],
- "modified": "2025-03-06 21:39:15.452717",
+ "modified": "2025-04-08 14:56:46.960739",
  "modified_by": "Administrator",
  "module": "TNT",
  "name": "TNT Shipment",

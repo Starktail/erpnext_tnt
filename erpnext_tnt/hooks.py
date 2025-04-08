@@ -147,23 +147,21 @@ override_doctype_class = {"Shipment": "erpnext_tnt.overrides.stock.shipment.Cust
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"erpnext_tnt.tasks.all"
-# 	],
-# 	"daily": [
-# 		"erpnext_tnt.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"erpnext_tnt.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"erpnext_tnt.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"erpnext_tnt.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	# 	"all": [
+	# 		"erpnext_tnt.tasks.all"
+	# 	],
+	"daily": ["erpnext_tnt.tnt.tasks.update_tracking_info_daily"],
+	# 	"hourly": [
+	# 		"erpnext_tnt.tasks.hourly"
+	# 	],
+	# 	"weekly": [
+	# 		"erpnext_tnt.tasks.weekly"
+	# 	],
+	# 	"monthly": [
+	# 		"erpnext_tnt.tasks.monthly"
+	# 	],
+}
 
 # Testing
 # -------

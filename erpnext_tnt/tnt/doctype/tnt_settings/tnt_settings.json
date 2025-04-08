@@ -10,6 +10,7 @@
   "section_break_afpq",
   "express_connect_shipping_endpoint",
   "express_connect_pricing_endpoint",
+  "express_connect_tracking_endpoint",
   "default_service_code",
   "hazardous_goods_un_number",
   "column_break_ddlp",
@@ -151,12 +152,19 @@
    "fieldtype": "Password",
    "label": "Express Label API Password",
    "mandatory_depends_on": "eval: doc.labels_enabled"
+  },
+  {
+   "default": "https://express.tnt.com/expressconnect/track.do",
+   "fieldname": "express_connect_tracking_endpoint",
+   "fieldtype": "Data",
+   "label": "Express Connect Tracking Endpoint",
+   "mandatory_depends_on": "eval: doc.shipping_enabled"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-03-06 15:51:20.798514",
+ "modified": "2025-04-08 14:48:11.108950",
  "modified_by": "Administrator",
  "module": "TNT",
  "name": "TNT Settings",
