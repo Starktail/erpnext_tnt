@@ -1,9 +1,12 @@
 # Copyright (c) 2020, Frappe Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
+from datetime import datetime
+
 import frappe
 from erpnext.stock.doctype.shipment.shipment import Shipment
 from frappe import _
+from frappe.utils import get_time
 
 
 class CustomShipment(Shipment):
@@ -32,3 +35,14 @@ class CustomShipment(Shipment):
 		"""
 		if self.custom_tnt_is_hazardous and self.custom_tnt_hazardous_weight <= 0:
 			frappe.throw(_("Hazardous Weight can not be 0"))
+
+	def validate_pickup_date_time_in_future(self):
+		"""
+		Validate that the pickup date and time is in the future
+		"""
+		if self.pickup_date and self.pickup_from:
+			pickup_datetime = datetime.combine(self.pickup_date, get_time(self.pickup_from))
+			if pickup_datetime <= frappe.utils.now_datetime():
+				frappe.throw(_("Pickup Date and Time must be in the future"))
+		else:
+			frappe.throw(_("Pickup Date and Time must be set"))

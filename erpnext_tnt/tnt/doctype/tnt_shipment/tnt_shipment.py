@@ -41,6 +41,7 @@ def create_tnt_shipment_doc_and_request_rates(shipment_name: str):
 	Create a new TNT Shipment document from a linked Shipment document
 	"""
 	shipment = frappe.get_doc("Shipment", shipment_name)
+	shipment.validate_pickup_date_time_in_future()
 	tnt_shipment = frappe.new_doc("TNT Shipment")
 	tnt_shipment.shipment = shipment.name
 	tnt_shipment.save()
