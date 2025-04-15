@@ -42,3 +42,5 @@ Shipping is not enabled in TNT Settings,Der Versand ist in den TNT-Einstellungen
 Only applicable to TNT Shipments. Will be checked automatically if Delivery Note contains any items marked as hazardous,Nur für TNT-Sendungen anwendbar. Wird automatisch überprüft wenn der Lieferschein Artikel enthält die als gefährlich markiert sind,
 Hazardous Weight (kg),Gefahrgutgewicht (kg),
 Hazardous Weight can not be 0,Gefahrgutgewicht darf nicht 0 sein,
+Pickup Date and Time must be in the future,Abholdatum und -uhrzeit müssen in der Zukunft liegen,
+Pickup Date and Time must be set,Abholdatum und -uhrzeit müssen festgelegt werden,
