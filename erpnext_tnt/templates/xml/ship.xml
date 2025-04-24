@@ -267,9 +267,9 @@
       <BOOK ShowBookingRef="Y">
          <CONREF><![CDATA[{{ shipment.name }}-test-{{ time }}]]></CONREF>
       </BOOK>
-      <!-- <SHIP>
+      <SHIP>
          <CONREF><![CDATA[TESTREF1]]></CONREF>
-      </SHIP> -->
+      </SHIP>
 
       <PRINT>
          <CONNOTE>
