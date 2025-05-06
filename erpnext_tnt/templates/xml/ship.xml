@@ -268,7 +268,7 @@
          <CONREF><![CDATA[{{ shipment.name }}-test-{{ time }}]]></CONREF>
       </BOOK>
       <SHIP>
-         <CONREF><![CDATA[TESTREF1]]></CONREF>
+         <CONREF><![CDATA[{{ shipment.name }}-test-{{ time }}]]></CONREF>
       </SHIP>
 
       <PRINT>
