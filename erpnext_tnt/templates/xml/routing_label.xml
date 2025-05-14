@@ -79,9 +79,9 @@
                 <identifier>{{ parcel.idx }}</identifier>
                 <goodsDescription><![CDATA[{{ shipment.description_of_content }}]]></goodsDescription>
                 <pieceMeasurements>
-                    <length>{{ parcel.length / 1000 }}</length>
-                    <width>{{ parcel.width / 1000 }}</width>
-                    <height>{{ parcel.height / 1000 }}</height>
+                    <length>{{ parcel.length / 100 }}</length>
+                    <width>{{ parcel.width / 100 }}</width>
+                    <height>{{ parcel.height / 100 }}</height>
                     <weight>{{ parcel.weight }}</weight>
                 </pieceMeasurements>
                 <!--Element pieces, maxOccurs=unbounded-->
