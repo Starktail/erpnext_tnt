@@ -42,9 +42,9 @@
         <pieceLine>
             <numberOfPieces><![CDATA[{{ parcel.count }}]]></numberOfPieces>
 			<pieceMeasurements>
-                <length><![CDATA[{{ parcel.length / 1000 }}]]></length>
-                <width><![CDATA[{{ parcel.width / 1000 }}]]></width>
-                <height><![CDATA[{{ parcel.height / 1000 }}]]></height>
+                <length><![CDATA[{{ parcel.length / 100 }}]]></length>
+                <width><![CDATA[{{ parcel.width / 100 }}]]></width>
+                <height><![CDATA[{{ parcel.height / 100 }}]]></height>
                 <weight><![CDATA[{{ parcel.weight }}]]></weight>
 			</pieceMeasurements>
 			<pallet>false</pallet>

@@ -223,9 +223,9 @@
             <PACKAGE>
                <ITEMS>{{ parcel.count }}</ITEMS>
                <DESCRIPTION><![CDATA[{{ shipment.description_of_content }}]]></DESCRIPTION>
-               <LENGTH>{{ parcel.length / 1000 }}</LENGTH>
-               <HEIGHT>{{ parcel.height / 1000 }}</HEIGHT>
-               <WIDTH>{{ parcel.width / 1000 }}</WIDTH>
+               <LENGTH>{{ parcel.length / 100 }}</LENGTH>
+               <HEIGHT>{{ parcel.height / 100 }}</HEIGHT>
+               <WIDTH>{{ parcel.width / 100 }}</WIDTH>
                <WEIGHT>{{ parcel.weight }}</WEIGHT>
                <!-- <ARTICLE> -->
                   <!-- <ITEMS><![CDATA[1]]></ITEMS>
