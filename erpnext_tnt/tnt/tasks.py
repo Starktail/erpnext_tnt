@@ -71,9 +71,8 @@ def update_tracking_info_daily():
 		shipment_doc = frappe.get_doc("Shipment", shipment.name)
 		tracking_info = update_tnt_tracking(
 			shipment.name,
-			shipment_doc.service_provider,
 			shipment_doc.shipment_id,
-			shipment_doc.shipment_delivery_notes,
+			[dn.delivery_note for dn in shipment_doc.shipment_delivery_note],
 		)
 
 		if tracking_info:
