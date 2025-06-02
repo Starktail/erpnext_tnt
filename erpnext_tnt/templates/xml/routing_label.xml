@@ -77,7 +77,7 @@
         {% for parcel in shipment.shipment_parcel %}
             <pieceLine>
                 <identifier>{{ parcel.idx }}</identifier>
-                <goodsDescription><![CDATA[{{ shipment.description_of_content }}]]></goodsDescription>
+                <goodsDescription><![CDATA[{{ shipment.description_of_content[:30] }}]]></goodsDescription>
                 <pieceMeasurements>
                     <length>{{ parcel.length / 100 }}</length>
                     <width>{{ parcel.width / 100 }}</width>
@@ -88,7 +88,7 @@
                 <pieces>
                     <!--Element sequenceNumbers, maxOccurs=unbounded-->
                     <sequenceNumbers>1</sequenceNumbers>
-                    <pieceReference><![CDATA[{{ shipment.description_of_content }}]]></pieceReference>
+                    <pieceReference><![CDATA[{{ shipment.description_of_content[:30] }}]]></pieceReference>
                 </pieces>
             </pieceLine>
         {% endfor %}
