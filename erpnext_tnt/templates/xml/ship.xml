@@ -100,7 +100,7 @@
          <!--A CONSIGNMENT element contains a key attribute that identifies it uniquely within the request. 
 		    The response will associate Shipping data and validation errors with their ACTIVITY through this key. 
 		    The value of this key must be of type string and is supplied in CONREF element.-->
-         <CONREF>{{ shipment.name }}-test-{{ time }}</CONREF>
+         <CONREF>{{ shipment.name }}-{{ time }}</CONREF>
          <DETAILS>
             <RECEIVER>
                <COMPANYNAME><![CDATA[{{ shipment.customer_name }}]]></COMPANYNAME>
@@ -159,7 +159,7 @@
 				This element contains your consignment number, if your application generates 
 				its own TNT consignment number. You userid must be configured to allow user generated consignment numbers and so contact your TNT
                 representative to arrange for this feature. -->
-            <!-- <CONNUMBER><![CDATA[{{ shipment.name }}-test-{{ time }}]]></CONNUMBER> -->
+            <!-- <CONNUMBER><![CDATA[{{ shipment.name }}-{{ time }}]]></CONNUMBER> -->
             <!--Element CONNUMBER is optional This element contains your consignment reference.   
 				This will be printed on the shipping documentations and can be used to track your consignment. -->
             <CUSTOMERREF><![CDATA[{{ shipment.shipment_delivery_note[0].delivery_note }}]]></CUSTOMERREF>
@@ -256,30 +256,30 @@
    </CONSIGNMENTBATCH>
    <ACTIVITY>
       <CREATE>
-         <CONREF><![CDATA[{{ shipment.name }}-test-{{ time }}]]></CONREF>
+         <CONREF><![CDATA[{{ shipment.name }}-{{ time }}]]></CONREF>
       </CREATE>
       {# We can not request rates for hazardous shipments #}
       {% if not is_hazardous %}
       <RATE>
-         <CONREF><![CDATA[{{ shipment.name }}-test-{{ time }}]]></CONREF>
+         <CONREF><![CDATA[{{ shipment.name }}-{{ time }}]]></CONREF>
       </RATE>
       {% endif %}
       <BOOK ShowBookingRef="Y">
-         <CONREF><![CDATA[{{ shipment.name }}-test-{{ time }}]]></CONREF>
+         <CONREF><![CDATA[{{ shipment.name }}-{{ time }}]]></CONREF>
       </BOOK>
       <SHIP>
-         <CONREF><![CDATA[{{ shipment.name }}-test-{{ time }}]]></CONREF>
+         <CONREF><![CDATA[{{ shipment.name }}-{{ time }}]]></CONREF>
       </SHIP>
 
       <PRINT>
          <CONNOTE>
-            <CONREF><![CDATA[{{ shipment.name }}-test-{{ time }}]]></CONREF>
+            <CONREF><![CDATA[{{ shipment.name }}-{{ time }}]]></CONREF>
          </CONNOTE>
          <LABEL>
-            <CONREF><![CDATA[{{ shipment.name }}-test-{{ time }}]]></CONREF>
+            <CONREF><![CDATA[{{ shipment.name }}-{{ time }}]]></CONREF>
          </LABEL>
          <MANIFEST>
-            <CONREF><![CDATA[{{ shipment.name }}-test-{{ time }}]]></CONREF>
+            <CONREF><![CDATA[{{ shipment.name }}-{{ time }}]]></CONREF>
          </MANIFEST>
          <!-- <INVOICE>
             <CONREF><![CDATA[TESTREF1]]></CONREF>

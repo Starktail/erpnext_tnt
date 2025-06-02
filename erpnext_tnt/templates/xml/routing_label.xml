@@ -7,10 +7,10 @@
                         ALL element data  MUST be enclosed within
                         CDATA tags.
     ########################################################## -->
-	<consignment key="{{ shipment.name }}-test-{{ time }}">
+	<consignment key="{{ shipment.name }}-{{ time }}">
 		<consignmentIdentity>
 			<consignmentNumber><![CDATA[{{ consignment_number }}]]></consignmentNumber>
-			<customerReference><![CDATA[{{ shipment.name }}-test-{{ time }}]]></customerReference>
+			<customerReference><![CDATA[{{ shipment.name }}-{{ time }}]]></customerReference>
 		</consignmentIdentity>
 		<collectionDateTime><![CDATA[{{ frappe.utils.format_datetime(shipment.pickup_date + shipment.pickup_from, "yyyy-MM-ddTHH:mm:ss") }}]]></collectionDateTime>
 		<sender>
