@@ -14,45 +14,45 @@
 		</consignmentIdentity>
 		<collectionDateTime><![CDATA[{{ frappe.utils.format_datetime(shipment.pickup_date + shipment.pickup_from, "yyyy-MM-ddTHH:mm:ss") }}]]></collectionDateTime>
 		<sender>
-			<name><![CDATA[{{ shipment.pickup_company }}]]></name>
-			<addressLine1><![CDATA[{{ shipment.pickup_addr_doc.address_line1 }}]]></addressLine1>
+			<name><![CDATA[{{ shipment.pickup_company[:40] }}]]></name>
+			<addressLine1><![CDATA[{{ shipment.pickup_addr_doc.address_line1[:30] }}]]></addressLine1>
 			<!--Element addressLine2 is optional-->
             {% if shipment.pickup_addr_doc.address_line2 %}
-            <addressLine2><![CDATA[{{ shipment.pickup_addr_doc.address_line2 }}]]></addressLine2>
+            <addressLine2><![CDATA[{{ shipment.pickup_addr_doc.address_line2[:30] }}]]></addressLine2>
             {% endif %}
 			<!--Element addressLine3 is optional-->
 			<!-- <addressLine3/> -->
 			<!--Element town is optional provided there is a postcode -->
-            <town><![CDATA[{{ shipment.pickup_addr_doc.city }}]]></town>
+            <town><![CDATA[{{ shipment.pickup_addr_doc.city[:40] }}]]></town>
 			<!--Element exactMatch is optional -->
 			<exactMatch><![CDATA[Y]]></exactMatch>
 			<!--Element province is optional-->
             {% if shipment.pickup_addr_doc.state %}
-            <province><![CDATA[{{ shipment.pickup_addr_doc.state }}]]></province>
+            <province><![CDATA[{{ shipment.pickup_addr_doc.state[:30] }}]]></province>
             {% endif %}
 			<!--Element postcode is optional-->
-            <postcode><![CDATA[{{ shipment.pickup_addr_doc.pincode }}]]></postcode>
+            <postcode><![CDATA[{{ shipment.pickup_addr_doc.pincode[:9] }}]]></postcode>
             <country><![CDATA[{{ shipment.pickup_addr_doc.country_code | upper }}]]></country>
 		</sender>
 		<delivery>
-            <name><![CDATA[{{ shipment.customer_name }}]]></name>
-            <addressLine1><![CDATA[{{ shipment.delivery_addr_doc.address_line1 }}]]></addressLine1>
+            <name><![CDATA[{{ shipment.customer_name[:40] }}]]></name>
+            <addressLine1><![CDATA[{{ shipment.delivery_addr_doc.address_line1[:30] }}]]></addressLine1>
 			<!--Element addressLine2 is optional-->
             {% if shipment.delivery_addr_doc.address_line2 %}
-               <addressLine2><![CDATA[{{ shipment.delivery_addr_doc.address_line2 }}]]></addressLine2>
+               <addressLine2><![CDATA[{{ shipment.delivery_addr_doc.address_line2[:30] }}]]></addressLine2>
             {% endif %}
 			<!--Element addressLine3 is optional-->
 			<!-- <addressLine3/> -->
 			<!--Element town is optional provided there is a postcode -->
-            <town><![CDATA[{{ shipment.delivery_addr_doc.city }}]]></town>
+            <town><![CDATA[{{ shipment.delivery_addr_doc.city[:40] }}]]></town>
 			<!--Element exactMatch is optional -->
 			<exactMatch><![CDATA[Y]]></exactMatch>
 			<!--Element province is optional-->
             {% if shipment.delivery_addr_doc.state %}
-               <province><![CDATA[{{ shipment.delivery_addr_doc.state }}]]></province>
+               <province><![CDATA[{{ shipment.delivery_addr_doc.state[:30] }}]]></province>
             {% endif %}
 			<!--Element postcode is optional-->
-            <postcode><![CDATA[{{ shipment.delivery_addr_doc.pincode }}]]></postcode>
+            <postcode><![CDATA[{{ shipment.delivery_addr_doc.pincode[:9] }}]]></postcode>
             <country><![CDATA[{{ shipment.delivery_addr_doc.country_code | upper }}]]></country>
 		</delivery>
 		<product>
@@ -88,7 +88,7 @@
                 <pieces>
                     <!--Element sequenceNumbers, maxOccurs=unbounded-->
                     <sequenceNumbers>1</sequenceNumbers>
-                    <pieceReference><![CDATA[{{ shipment.description_of_content[:30] }}]]></pieceReference>
+                    <pieceReference><![CDATA[{{ shipment.description_of_content[:24] }}]]></pieceReference>
                 </pieces>
             </pieceLine>
         {% endfor %}
