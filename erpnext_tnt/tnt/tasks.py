@@ -8,8 +8,11 @@ def update_tnt_tracking(shipment, shipment_id, delivery_notes=None):
 	if delivery_notes is None:
 		delivery_notes = []
 
-	tnt_shipments = frappe.get_list("TNT Shipment", {"shipment": shipment, "tracking_number": shipment_id})[0]
-	tnt_shipment = frappe.get_doc("TNT Shipment", tnt_shipments.name)
+	tnt_shipments = frappe.get_list("TNT Shipment", {"shipment": shipment, "tracking_number": shipment_id})
+	if len(tnt_shipments) == 0:
+		return
+
+	tnt_shipment = frappe.get_doc("TNT Shipment", tnt_shipments[0].name)
 
 	# Update Tracking info in Shipment
 	tracking_data = tnt_shipment.fetch_tracking_tnt_express_api()
@@ -65,6 +68,7 @@ def update_tracking_info_daily():
 			"status": "Booked",
 			"shipment_id": ["!=", ""],
 			"tracking_status": ["!=", "Delivered"],
+			"carrier": "TNT Express",
 		},
 	)
 	for shipment in shipments:
