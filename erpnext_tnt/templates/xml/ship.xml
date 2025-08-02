@@ -267,9 +267,11 @@
       <BOOK ShowBookingRef="Y">
          <CONREF><![CDATA[{{ shipment.name }}-{{ time }}]]></CONREF>
       </BOOK>
+      {% if live_mode %}
       <SHIP>
          <CONREF><![CDATA[{{ shipment.name }}-{{ time }}]]></CONREF>
       </SHIP>
+      {% endif %}
 
       <PRINT>
          <CONNOTE>

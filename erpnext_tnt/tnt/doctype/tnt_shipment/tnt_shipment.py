@@ -115,6 +115,7 @@ class TNTShipment(Document):
 				"hazardous_goods_un_number": self.tnt_settings.hazardous_goods_un_number,
 				"shipment": self.erpnext_shipment_ext,
 				"tnt_service": self.tnt_service,
+				"live_mode": self.tnt_settings.live_mode,
 			},
 		)
 
