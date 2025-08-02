@@ -7,6 +7,7 @@
  "field_order": [
   "shipping_tab",
   "shipping_enabled",
+  "live_mode",
   "section_break_afpq",
   "express_connect_shipping_endpoint",
   "express_connect_pricing_endpoint",
@@ -159,12 +160,20 @@
    "fieldtype": "Data",
    "label": "Express Connect Tracking Endpoint",
    "mandatory_depends_on": "eval: doc.shipping_enabled"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval: doc.shipping_enabled",
+   "description": "If this is enabled, the <code>SHIP</code> tag will be included in XML payloads to TNT. Only enable this once you have confirmation from your TNT Representative",
+   "fieldname": "live_mode",
+   "fieldtype": "Check",
+   "label": "Live mode"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-04-08 14:48:11.108950",
+ "modified": "2025-08-02 16:31:49.301705",
  "modified_by": "Administrator",
  "module": "TNT",
  "name": "TNT Settings",
@@ -181,6 +190,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []
