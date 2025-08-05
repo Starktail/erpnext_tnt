@@ -31,8 +31,8 @@ class TNTAPI:
 		if not self.tnt_settings.shipping_enabled:
 			raise TNTAPIDisabledError
 
-	def _build_xml_request(self, url, rendered_xml: str, use_form_data: bool = True) -> Tuple[dict, str, HTTPBasicAuth]:
-		headers = {"SOAPAction": url, "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"}
+	def _build_xml_request(self, url, rendered_xml: str, use_form_data: bool = True, content_type="application/x-www-form-urlencoded") -> Tuple[dict, str, HTTPBasicAuth]:
+		headers = {"SOAPAction": url, "Content-Type": content_type}
 		if use_form_data:
 			encoded_xml = urllib.parse.quote(rendered_xml)
 			payload = f"xml_in={encoded_xml}"
@@ -81,7 +81,7 @@ class TNTAPI:
 		url = self.tnt_settings.express_connect_shipping_endpoint
 
 		# Create the Consignment using the TNT API
-		headers, payload, auth = self._build_xml_request(url, rendered_xml)
+		headers, payload, auth = self._build_xml_request(url, rendered_xml, content_type="application/x-www-form-urlencoded; charset=UTF-8")
 		try:
 			post_response = self._request("POST", url, headers=headers, auth=auth, data=payload)
 		except Exception as e:
@@ -248,10 +248,12 @@ class TNTAPI:
 		url = self.tnt_settings.express_label_endpoint
 
 		# Request Routing label data using the TNT API
-		headers, payload, auth = self._build_xml_request(url, rendered_xml, use_form_data=False)
+		headers, payload, auth = self._build_xml_request(url, rendered_xml, use_form_data=False, content_type="text/xml")
 
+		# TNT's label info endpoint runs on a different API server/technology, which requires the payload to be encoded
+		encoded_payload = payload.encode("utf-8")
 		try:
-			get_response = self._request("POST", url, headers=headers, auth=auth, data=payload)
+			get_response = self._request("POST", url, headers=headers, auth=auth, data=encoded_payload)
 		except Exception as e:
 			return TNTAPIResult(error=e)
 
