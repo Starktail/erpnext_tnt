@@ -32,7 +32,7 @@ class TNTAPI:
 			raise TNTAPIDisabledError
 
 	def _build_xml_request(self, url, rendered_xml: str, use_form_data: bool = True) -> Tuple[dict, str, HTTPBasicAuth]:
-		headers = {"SOAPAction": url, "Content-Type": "application/x-www-form-urlencoded"}
+		headers = {"SOAPAction": url, "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"}
 		if use_form_data:
 			encoded_xml = urllib.parse.quote(rendered_xml)
 			payload = f"xml_in={encoded_xml}"
