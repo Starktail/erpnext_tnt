@@ -31,8 +31,8 @@ class TNTAPI:
 		if not self.tnt_settings.shipping_enabled:
 			raise TNTAPIDisabledError
 
-	def _build_xml_request(self, url, rendered_xml: str, use_form_data: bool = True) -> Tuple[dict, str, HTTPBasicAuth]:
-		headers = {"SOAPAction": url, "Content-Type": "application/x-www-form-urlencoded"}
+	def _build_xml_request(self, url, rendered_xml: str, use_form_data: bool = True, content_type="application/x-www-form-urlencoded") -> Tuple[dict, str, HTTPBasicAuth]:
+		headers = {"SOAPAction": url, "Content-Type": content_type}
 		if use_form_data:
 			encoded_xml = urllib.parse.quote(rendered_xml)
 			payload = f"xml_in={encoded_xml}"
@@ -81,7 +81,7 @@ class TNTAPI:
 		url = self.tnt_settings.express_connect_shipping_endpoint
 
 		# Create the Consignment using the TNT API
-		headers, payload, auth = self._build_xml_request(url, rendered_xml)
+		headers, payload, auth = self._build_xml_request(url, rendered_xml, content_type="application/x-www-form-urlencoded; charset=UTF-8")
 		try:
 			post_response = self._request("POST", url, headers=headers, auth=auth, data=payload)
 		except Exception as e:
@@ -224,43 +224,36 @@ class TNTAPI:
 		except Exception as e:
 			return TNTAPIResult(error=e)
 
-		# Step 1: decode the full content as UTF-8
-		xml = get_response.content.decode("utf-8")
-
-		# Step 2: fix mojibake by re-encoding as Latin-1 and decoding back to UTF-8
-		content = xml.encode("latin1").decode("utf-8")
-
 		# Check if result is string or XML, we expect XML
 		try:
-			root = ET.fromstring(content)
+			root = ET.fromstring(get_response.text)
 		except ET.ParseError as e:
 			return TNTAPIResult(TNTAPIUnexpectedResponseError())
 
 		# Check for errors in the response
 		if root.tag in ["parse_error", "runtime_error"]:
-			return TNTAPIResult(error=TNTAPIError(content))
+			return TNTAPIResult(error=TNTAPIError(get_response.text))
 		if root.tag == "document" and root.find("ERROR"):
-			return TNTAPIResult(error=TNTAPIError(content))
+			return TNTAPIResult(error=TNTAPIError(get_response.text))
 
 		# Validate response
 		if root.tag == "CONSIGNMENTBATCH":
-			result_data = parse_xml_to_dict(content)
-			self.result = TNTAPIResult(raw_response_text=content, data=result_data)
+			result_data = parse_xml_to_dict(get_response.text)
+			self.result = TNTAPIResult(raw_response_text=get_response.text, data=result_data)
 			return self.result
 		else:
-			return TNTAPIResult(error=TNTAPIError(content))
+			return TNTAPIResult(error=TNTAPIError(get_response.text))
 
 	def request_routing_label_data(self, rendered_xml: str) -> TNTAPIResult:
 		url = self.tnt_settings.express_label_endpoint
 
 		# Request Routing label data using the TNT API
-		headers, payload, auth = self._build_xml_request(url, rendered_xml, use_form_data=False)
+		headers, payload, auth = self._build_xml_request(url, rendered_xml, use_form_data=False, content_type="text/xml")
 
-		# Encoding weirdness with TNT API
+		# TNT's label info endpoint runs on a different API server/technology, which requires the payload to be encoded
 		encoded_payload = payload.encode("utf-8")
-
 		try:
-			get_response = self._request("POST", url, headers=headers, auth=auth, data=encoded_payload, data_to_log=payload)
+			get_response = self._request("POST", url, headers=headers, auth=auth, data=encoded_payload)
 		except Exception as e:
 			return TNTAPIResult(error=e)
 

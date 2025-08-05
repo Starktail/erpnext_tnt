@@ -2,7 +2,7 @@
 
 ![CI workflow](https://github.com/dvdl16/erpnext_tnt/actions/workflows/ci.yml/badge.svg?branch=version-15)
 
-< codecov badge here >
+[![codecov](https://codecov.io/gh/dvdl16/erpnext_tnt/graph/badge.svg?token=12QO3B73LJ)](https://codecov.io/gh/dvdl16/erpnext_tnt)
 
 A TNT Express integration for ERPNext
 
