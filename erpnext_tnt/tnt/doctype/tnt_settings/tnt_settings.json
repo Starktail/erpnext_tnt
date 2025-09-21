@@ -12,6 +12,7 @@
   "express_connect_shipping_endpoint",
   "express_connect_pricing_endpoint",
   "express_connect_tracking_endpoint",
+  "express_connect_lookup_endpoint",
   "default_service_code",
   "hazardous_goods_un_number",
   "column_break_ddlp",
@@ -168,12 +169,19 @@
    "fieldname": "live_mode",
    "fieldtype": "Check",
    "label": "Live mode"
+  },
+  {
+   "default": "https://express.tnt.com/expressconnect/pricing/gettownpost",
+   "fieldname": "express_connect_lookup_endpoint",
+   "fieldtype": "Data",
+   "label": "Express Connect City Lookup Endpoint",
+   "mandatory_depends_on": "eval: doc.shipping_enabled"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-08-02 16:31:49.301705",
+ "modified": "2025-09-21 15:36:56.098271",
  "modified_by": "Administrator",
  "module": "TNT",
  "name": "TNT Settings",

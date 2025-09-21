@@ -280,6 +280,19 @@ class TNTShipment(Document):
 			label = get_field_label(contact, "phone") + "/" + get_field_label(contact, "mobile_no")
 			frappe.throw(_("Missing required field: {0} for Contact '{1}'").format(frappe.bold(label), frappe.bold(contact.name)))
 
+		# Validate the address town/city fields according to TNTExpress API
+		# Validate Pickup Address City
+		city_pickup = self.validate_city_with_tnt_express(
+			country=self.erpnext_shipment_ext.pickup_addr_doc.country_code, city=self.erpnext_shipment_ext.pickup_addr_doc.city, postcode=self.erpnext_shipment_ext.pickup_addr_doc.pincode
+		)
+		self.erpnext_shipment_ext.pickup_addr_doc.city = city_pickup
+
+		# Validate Delivery Address City
+		city_delivery = self.validate_city_with_tnt_express(
+			country=self.erpnext_shipment_ext.delivery_addr_doc.country_code, city=self.erpnext_shipment_ext.delivery_addr_doc.city, postcode=self.erpnext_shipment_ext.delivery_addr_doc.pincode
+		)
+		self.erpnext_shipment_ext.delivery_addr_doc.city = city_delivery
+
 	def get_company_contact(self):
 		user = self.erpnext_shipment_ext.pickup_contact_person
 		company_contact = frappe.db.get_value("User", user, ["full_name", "last_name", "email", "phone", "mobile_no"], as_dict=True)
@@ -369,6 +382,37 @@ class TNTShipment(Document):
 			"tracking_status_info": consignment_data["DeliveryDate"]["#text"] if "DeliveryDate" in consignment_data else "",
 			"tracking_url": None,
 		}
+
+	def validate_city_with_tnt_express(self, country: str, city: str, postcode: str):
+		"""
+		Validate city name with TNT Express API
+		"""
+		key = f"tnt_express_town|{country}|{city}|{postcode}"  # unique key representing this combination
+		# If this key exists in cache, then return value
+		if cached_value := frappe.cache.get_value(key):
+			return cached_value
+
+		rendered_xml = frappe.render_template(
+			"erpnext_tnt/templates/xml/validate_city.xml",
+			context={
+				"country": country,
+				"city": city,
+				"postcode": postcode,
+			},
+		)
+		tnt_api = TNTAPI(dt=self.doctype, dn=self.name, auth=self.shipping_auth)
+		result = tnt_api.validate_city(rendered_xml)
+
+		if result.error:
+			raise self._raise_error(result.error, save_to_doc=False)
+
+		if "town" not in result.data:
+			raise self._raise_error(ValueError(_("City/Town {0} not found in TNTExpress Database").format(city)), save_to_doc=False)
+
+		# Set the retrieved value in cache so next time we dont have to do the work
+		frappe.cache.set_value(key, result.data["town"])
+
+		return result.data["town"]
 
 
 def update_delivery_notes(delivery_note_names, tracking_number: str, carrier="TNT Express"):
