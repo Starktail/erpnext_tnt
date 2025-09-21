@@ -207,6 +207,41 @@ class TNTAPI:
 		else:
 			return TNTAPIResult(error=TNTAPIError(get_response.text))
 
+	def validate_city(self, rendered_xml: str) -> TNTAPIResult:
+		result_data = {}
+		url = self.tnt_settings.express_connect_lookup_endpoint
+
+		# Validate the City/town using the TNT API
+		headers, payload, auth = self._build_xml_request(url, rendered_xml, use_form_data=False, content_type="text/xml; charset=UTF-8")
+		# This endpoint runs on a different API server/technology, which requires the payload to be encoded
+		encoded_payload = payload.encode("utf-8")
+		try:
+			get_response = self._request("POST", url, headers=headers, auth=auth, data=encoded_payload)
+		except Exception as e:
+			return TNTAPIResult(error=e)
+
+		# Check if result is string or XML, we expect XML
+		try:
+			root = ET.fromstring(get_response.text)
+		except ET.ParseError as e:
+			return TNTAPIResult(TNTAPIUnexpectedResponseError())
+
+		# Check for errors in the response
+		if root.tag == "document":
+			detail_err_text = root.find(".//errorReason").text or ""
+			detail_err_text_extra = root.find(".//errorSrcText").text or ""
+			error_text = f"{detail_err_text}. {detail_err_text_extra}" if detail_err_text else get_response.text
+			return TNTAPIResult(error=TNTAPIError(error_text))
+
+		# Validate response
+		if root.tag == "searchResults":
+			for search_result in root.findall("searchResult"):
+				result_data["town"] = search_result.findtext("searchTown")
+				self.result = TNTAPIResult(raw_response_text=get_response.text, data=result_data)
+				return self.result
+		else:
+			return TNTAPIResult(error=TNTAPIError(get_response.text))
+
 	def request_label_data(self, command_keyword: str):
 		"""
 		Generic method to request label data
@@ -280,9 +315,6 @@ class TNTAPI:
 
 		# Request Tracking data using the TNT API
 		headers, payload, auth = self._build_xml_request(url, rendered_xml)
-
-		# Encoding weirdness with TNT API
-		# encoded_payload = payload.encode("utf-8")
 
 		try:
 			get_response = self._request("POST", url, headers=headers, auth=auth, data=payload)

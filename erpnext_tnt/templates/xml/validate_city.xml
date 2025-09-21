@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<townSearchRequest>
+	<appId>PC</appId>
+	<appVersion>1.0</appVersion>
+	<townsearch>
+		<country>{{ country }}</country>
+		<town>{{ city }}</town>
+		<postcode>{{ postcode }}</postcode>
+	</townsearch>
+</townSearchRequest>
