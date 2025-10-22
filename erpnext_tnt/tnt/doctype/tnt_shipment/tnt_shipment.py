@@ -262,10 +262,6 @@ class TNTShipment(Document):
 			label = get_field_label(self.erpnext_shipment_ext, "pickup_from_type")
 			frappe.throw(_("{0} of type {1} is not supported").format(frappe.bold(label), frappe.bold(self.erpnext_shipment_ext.pickup_from_type)))
 
-		# Validate linked delivery note(s)
-		if len(self.erpnext_shipment_ext.shipment_delivery_note) == 0:
-			frappe.throw(_("No Delivery Notes linked to Shipment"))
-
 		# Validate required fields on parcel items
 		if len(self.erpnext_shipment_ext.shipment_parcel) == 0:
 			frappe.throw(_("No Parcels linked to Shipment"))
