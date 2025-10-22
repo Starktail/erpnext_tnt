@@ -215,11 +215,17 @@ class TNTShipment(Document):
 		self.erpnext_shipment_ext.pickup_date_formatted = frappe.utils.format_date(self.erpnext_shipment_ext.pickup_date, "dd/mm/yyyy")
 		self.erpnext_shipment_ext.pickup_from_formatted = frappe.utils.format_time(self.erpnext_shipment_ext.pickup_from, "HH:mm")
 		self.erpnext_shipment_ext.pickup_to_formatted = frappe.utils.format_time(self.erpnext_shipment_ext.pickup_to, "HH:mm")
-		self.erpnext_shipment_ext.customer_name = frappe.get_value("Customer", self.erpnext_shipment_ext.delivery_customer, "customer_name")
 		self.erpnext_shipment_ext.tnt_total_items_count = sum([item.count for item in self.erpnext_shipment_ext.shipment_parcel])
 		self.erpnext_shipment_ext.tnt_total_weight = sum([item.weight for item in self.erpnext_shipment_ext.shipment_parcel])
 		self.erpnext_shipment_ext.tnt_total_volume = sum([(item.length * item.width * item.height) / 1000000 for item in self.erpnext_shipment_ext.shipment_parcel])
 		self.erpnext_shipment_ext.tnt_currency = frappe.get_value("Company", self.erpnext_shipment_ext.pickup_company, "default_currency")
+
+		if self.erpnext_shipment_ext.delivery_to_type == "Customer":
+			self.erpnext_shipment_ext.customer_name = frappe.get_value("Customer", self.erpnext_shipment_ext.delivery_customer, "customer_name")
+		elif self.erpnext_shipment_ext.delivery_to_type == "Supplier":
+			self.erpnext_shipment_ext.customer_name = frappe.get_value("Supplier", self.erpnext_shipment_ext.delivery_supplier, "supplier_name")
+		else:
+			frappe.throw(_(f"Delivery to '{self.erpnext_shipment_ext.delivery_to_type}' not supported"))
 
 		# Load the linked address docs
 		self.erpnext_shipment_ext.pickup_addr_doc = frappe.get_doc("Address", self.erpnext_shipment_ext.pickup_address_name)
@@ -241,11 +247,17 @@ class TNTShipment(Document):
 			raise frappe.ValidationError()
 
 		# Validate required fields on shipment
-		required_shipment_fields = ["pickup_company", "pickup_address", "delivery_customer"]
+		required_shipment_fields = ["pickup_company", "pickup_address"]
 		for field_name in required_shipment_fields:
 			if not self.erpnext_shipment_ext.get(field_name):
 				label = get_field_label(self.erpnext_shipment_ext, field_name)
 				frappe.throw(_("Missing required field on Shipment: {0}").format(frappe.bold(label)))
+
+		# Validate that either Customer or Supplier is specified on the shipment
+		if not (self.erpnext_shipment_ext.get("delivery_customer") or self.erpnext_shipment_ext.get("delivery_supplier")):
+			label = f"{get_field_label(self.erpnext_shipment_ext, 'delivery_customer')}/{get_field_label(self.erpnext_shipment_ext, 'delivery_supplier')}"
+			frappe.throw(_("Missing required field on Shipment: {0}").format(frappe.bold(label)))
+
 		if self.erpnext_shipment_ext.pickup_from_type != "Company":
 			label = get_field_label(self.erpnext_shipment_ext, "pickup_from_type")
 			frappe.throw(_("{0} of type {1} is not supported").format(frappe.bold(label), frappe.bold(self.erpnext_shipment_ext.pickup_from_type)))
