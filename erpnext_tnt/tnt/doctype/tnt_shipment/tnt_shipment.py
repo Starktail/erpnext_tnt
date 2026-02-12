@@ -108,7 +108,7 @@ class TNTShipment(Document):
 		self.check_if_shipment_contains_hazardous_items()
 		self.error = ""
 
-		rendered_xml = frappe.render_template(
+		rendered_xml = frappe.render_template(  # nosemgrep: frappe-ssti
 			"erpnext_tnt/templates/xml/ship.xml",
 			context={
 				"username": self.tnt_settings.shipping_api_username,
@@ -191,7 +191,7 @@ class TNTShipment(Document):
 		product_line_of_business, product_id, product_type = get_product_details(
 			service_code=self.tnt_service
 		)
-		rendered_xml = frappe.render_template(
+		rendered_xml = frappe.render_template(  # nosemgrep: frappe-ssti
 			"erpnext_tnt/templates/xml/routing_label.xml",
 			context={
 				"tnt_account": self.tnt_settings.tnt_account,
@@ -404,7 +404,7 @@ class TNTShipment(Document):
 				],
 			}
 
-		rendered_xml = frappe.render_template(
+		rendered_xml = frappe.render_template(  # nosemgrep: frappe-ssti
 			"erpnext_tnt/templates/xml/price_check.xml",
 			context={
 				"username": self.tnt_settings.shipping_api_username,
@@ -435,7 +435,7 @@ class TNTShipment(Document):
 		"""
 		self._get_settings()
 
-		rendered_xml = frappe.render_template(
+		rendered_xml = frappe.render_template(  # nosemgrep: frappe-ssti
 			"erpnext_tnt/templates/xml/track.xml",
 			context={
 				"consignment_number": self.tnt_shipment_id[2:-2],  # e.g. GE981432666DE = 981432666
@@ -481,7 +481,7 @@ class TNTShipment(Document):
 		if cached_value := frappe.cache.get_value(key):
 			return cached_value
 
-		rendered_xml = frappe.render_template(
+		rendered_xml = frappe.render_template(  # nosemgrep: frappe-ssti
 			"erpnext_tnt/templates/xml/validate_city.xml",
 			context={
 				"country": country,

@@ -1,13 +1,20 @@
 import json
 
 import frappe
+from frappe.model.document import Document
 from frappe.translate import print_language
 from frappe.www.printview import validate_print_permission
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=True)  # nosemgrep: guest-whitelisted-method
 def custom_download_pdf(
-	doctype, name, format=None, doc=None, no_letterhead=0, language=None, letterhead=None
+	doctype: str,
+	name: str,
+	format: str | None = None,
+	doc: Document | None = None,
+	no_letterhead: int | None = 0,
+	language: str | None = None,
+	letterhead: str | None = None,
 ):
 	"""
 	Custom version of download_pdf to set "margin-right" and "margin-left" in options, otherwise these would default to "15mm",

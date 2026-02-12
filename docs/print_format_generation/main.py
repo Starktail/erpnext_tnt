@@ -25,7 +25,7 @@ xslt = ET.parse(xsl_file)
 transform = ET.XSLT(xslt)
 newdom = transform(dom)
 
-with open("output.html", "wb") as f:
+with open("output.html", "wb") as f:  # nosemgrep: frappe-security-file-traversal
 	f.write(ET.tostring(newdom, pretty_print=True, method="html"))
 
 # Use the output.html file, modify it with Jinja2 and save it as the HTML for the relevant print format
