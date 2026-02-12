@@ -1,0 +1,12 @@
+# Ignore vitepress dist files
+www/erpnext_tnt_*.py
+www/404.py
+www/erpnext_tnt_*.html
+www/404.html
+www/hashmap.json
+www/vp-icons.css
+www/assets
+public/app.*.js
+public/erpnext_tnt_*.js
+public/style.*.css
+public/chunks

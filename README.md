@@ -1,29 +1,44 @@
-## ERPNext TNT Integration
+<div align="center" markdown="1">
 
-![CI workflow](https://github.com/dvdl16/erpnext_tnt/actions/workflows/ci.yml/badge.svg?branch=version-15)
+<img src="docs/images/logo.png" width="80" />
 
-[![codecov](https://codecov.io/gh/dvdl16/erpnext_tnt/graph/badge.svg?token=12QO3B73LJ)](https://codecov.io/gh/dvdl16/erpnext_tnt)
 
-A TNT Express integration for ERPNext
+# ERPNext TNT Integration
 
-#### License
+**ERPNext TNT Integration**
+![demo screenshot](docs/images/screenshot.png)
+</div>
 
-MIT
 
-#### Manual Installation
+### ERPNext TNT Integration
 
-1. [Install bench](https://github.com/frappe/bench).
-2. [Install ERPNext](https://github.com/frappe/erpnext#installation).
-3. Once ERPNext is installed, add the erpnext_tnt app to your bench by running
+![CI workflow](https://github.com/Starktail/erpnext_tnt/actions/workflows/ci.yml/badge.svg?branch=version-15)
 
-	```sh
-	$ bench get-app https://github.com/dvdl16/erpnext_tnt
-	```
-4. After that, you can install the erpnext_tnt app on the required site by running
-	```sh
-	$ bench --site sitename install-app erpnext_tnt
-	```
+[![codecov](https://codecov.io/github/Starktail/erpnext_tnt/graph/badge.svg?token=12QO3B73LJ)](https://codecov.io/github/Starktail/erpnext_tnt)
 
+ERPNext TNT Integration
+
+
+### License
+
+Starktail (Pty) Ltd
+
+
+### User documentation
+
+📄 ERPNext TNT Integration: https://[yoursite].com/erpnext_tnt_introduction
+
+### Installation
+
+You can install this app using the [bench](https://github.com/frappe/bench) CLI:
+
+```bash
+cd $PATH_TO_YOUR_BENCH
+bench get-app $URL_OF_THIS_REPO --branch develop
+bench install-app erpnext_tnt
+```
+
+### Development
 
 #### Tests
 
@@ -48,31 +63,25 @@ sudo apt-get install chromium
 bench --site test_site run-ui-tests erpnext_tnt --headless --browser chromium
 ```
 
-If you get the following error:
-```shell
-No version of Cypress is installed in: /home/frappe/.cache/Cypress/10.x.x/Cypress
+#### Contributing
 
-Please reinstall Cypress by running: cypress install
-```
+This app uses `pre-commit` for code formatting and linting. Please [install pre-commit](https://pre-commit.com/#installation) and enable it for this repository:
 
-just run:
-```shell
-./node_modules/.bin/cypress install
-```
-
-#### Development
-
-We use [pre-commit](https://pre-commit.com/) for linting. First time setup may be required:
-```shell
-# Install pre-commit
-pip install pre-commit
-
-# Install the git hook scripts
+```bash
+cd apps/erpnext_tnt
 pre-commit install
 
 #(optional) Run against all the files
 pre-commit run --all-files
 ```
+
+Pre-commit is configured to use the following tools for checking and formatting your code:
+
+- ruff
+- eslint
+- prettier
+- pyupgrade
+
 
 We use [Semgrep](https://semgrep.dev/docs/getting-started/) rules specific to [Frappe Framework](https://github.com/frappe/frappe)
 ```shell
@@ -86,12 +95,14 @@ git clone --depth 1 https://github.com/frappe/semgrep-rules.git frappe-semgrep-r
 semgrep --config=/workspace/development/frappe-semgrep-rules/rules apps/erpnext_tnt
 ```
 
-If you use VS Code, you can specify the `.flake8` config file in your `settings.json` file:
-```shell
-"python.linting.flake8Args": ["--config=frappe-bench-v15/apps/erpnext_tnt/.flake8_strict"]
-```
+#### Updating Documentation
 
+For documentation, we use [vitepress](https://vitepress.dev/). You can run `yarn docs:dev` to preview the docs when applying changes
 
-#### Print Formats
+#### CI
 
-See `docs > print_format_generation > main.py` for steps to generate HTML print formats from TNT `XML` and `XSL` fies
+This app can use GitHub Actions for CI. The following workflows are configured:
+
+- CI: Installs this app and runs unit tests on every push to `develop` branch.
+- Linters: Runs [Frappe Semgrep Rules](https://github.com/frappe/semgrep-rules) and [pip-audit](https://pypi.org/project/pip-audit/) on every pull request, as well as [Semgrep](https://semgrep.dev/docs/getting-started/)
+
