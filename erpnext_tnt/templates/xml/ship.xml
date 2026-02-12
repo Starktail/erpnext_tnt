@@ -16,9 +16,9 @@
          {% endif %}
          <!--Element STREETADDRESS3 is optional-->
          <!-- <STREETADDRESS3><![CDATA[Holly Lane]]></STREETADDRESS3> -->
-         <!--Element CITY is a key element.  To ship with TNT, we must know the exact 
-			location that you are shipping to/from, in TNT terms. The full town name must match 
-			the spelling TNT uses for validation.  Please work with your TNT representative to 
+         <!--Element CITY is a key element.  To ship with TNT, we must know the exact
+			location that you are shipping to/from, in TNT terms. The full town name must match
+			the spelling TNT uses for validation.  Please work with your TNT representative to
 			ensure your town names match TNT?s in case of errors.-->
          <CITY><![CDATA[{{ shipment.pickup_addr_doc.city }}]]></CITY>
          <!--Element PROVINCE is optional and not validated by TNT.-->
@@ -48,9 +48,9 @@
                {% endif %} -->
                <!--Element STREETADDRESS3 is optional-->
                <!-- <STREETADDRESS3><![CDATA[TEST DO NOT COLLECT]]></STREETADDRESS3> -->
-               <!--Element CITY is a key element.  To ship with TNT, we must know the exact 
+               <!--Element CITY is a key element.  To ship with TNT, we must know the exact
 			    	location that you are shipping to/from, in TNT terms. The full town name must
-					match the spelling TNT uses for validation.   Please work with your 
+					match the spelling TNT uses for validation.   Please work with your
 					TNT representative to ensure your town names match TNT?s in case of errors.-->
                <!-- <CITY><![CDATA[{{ shipment.pickup_addr_doc.city }}]]></CITY> -->
                <!--Element PROVINCE is optional and not validated by TNT.-->
@@ -72,14 +72,14 @@
             <!--Element SHIPDATE is the date which you wish the parcels to be collected,
 				and it must be supplied in the format DD/MM/CCYY.  It is a mandatory field.-->
             <SHIPDATE><![CDATA[{{ shipment.pickup_date_formatted }}]]></SHIPDATE>
-            <!--Collections is raised for every consignment, with exception of customers with 
-				scheduled collection.  The earliest time the goods may be collected (Goods ready time) 
+            <!--Collections is raised for every consignment, with exception of customers with
+				scheduled collection.  The earliest time the goods may be collected (Goods ready time)
 				should be supplied in the PREFCOLLECTTIM / FROM element, in the format HH:MM.
-				The latest time the goods can be collected must be supplied in the 
+				The latest time the goods can be collected must be supplied in the
 				PREFCOLLECTTIM / TO element, in the format HH:MM.
 				If your company has a lunchtime, them please supply the morning opening times in the
 				PREFCOLLECTTIM element and the afternoon opening times in the ALTCOLLECTTIME.
-				These details are validated against the time the TNT truck will be within your area, to ensure 
+				These details are validated against the time the TNT truck will be within your area, to ensure
 				the TNT truck is within your area at a time where you are open.-->
             <PREFCOLLECTTIME>
                <FROM><![CDATA[{{ shipment.pickup_from_formatted }}]]></FROM>
@@ -89,16 +89,16 @@
                <FROM><![CDATA[11:00]]></FROM>
                <TO><![CDATA[12:00]]></TO>
             </ALTCOLLECTTIME> -->
-            <!--Please supply any special instruction which need to be passed to the collection driver 
+            <!--Please supply any special instruction which need to be passed to the collection driver
 				in the <COLLINSTRUCTIONS> element. -->
             <COLLINSTRUCTIONS><![CDATA[]]></COLLINSTRUCTIONS>
          </COLLECTION>
       </SENDER>
-      <!--It is recommended that no more than 3 CONSIGNMENT elements are supplied, unless you have set a 
+      <!--It is recommended that no more than 3 CONSIGNMENT elements are supplied, unless you have set a
 		large timeout period. -->
       <CONSIGNMENT>
-         <!--A CONSIGNMENT element contains a key attribute that identifies it uniquely within the request. 
-		    The response will associate Shipping data and validation errors with their ACTIVITY through this key. 
+         <!--A CONSIGNMENT element contains a key attribute that identifies it uniquely within the request.
+		    The response will associate Shipping data and validation errors with their ACTIVITY through this key.
 		    The value of this key must be of type string and is supplied in CONREF element.-->
          <CONREF>{{ shipment.name }}-{{ time }}</CONREF>
          <DETAILS>
@@ -111,9 +111,9 @@
                {% endif %}
                <!--Element STREETADDRESS3 is optional-->
                <!-- <STREETADDRESS3><![CDATA[TEST DO NOT COLLECT]]></STREETADDRESS3> -->
-               <!--Element CITY is a key element.  To ship with TNT, we must know the exact 
+               <!--Element CITY is a key element.  To ship with TNT, we must know the exact
 			    	location that you are shipping to/from, in TNT terms. The full town name must
-					match the spelling TNT uses for validation.   Please work with your 
+					match the spelling TNT uses for validation.   Please work with your
 					TNT representative to ensure your town names match TNT?s in case of errors.-->
                <CITY><![CDATA[{{ shipment.delivery_addr_doc.city }}]]></CITY>
                <!--Element PROVINCE is optional and not validated by TNT.-->
@@ -138,9 +138,9 @@
                <!-- <STREETADDRESS2><![CDATA[TEST DO NOT COLLECT & cancelled]]></STREETADDRESS2> -->
                <!--Element STREETADDRESS3 is optional-->
                <!-- <STREETADDRESS3><![CDATA[TEST DO NOT COLLECT & cancelled]]></STREETADDRESS3> -->
-               <!--Element CITY is a key element.  To ship with TNT, we must know the exact 
+               <!--Element CITY is a key element.  To ship with TNT, we must know the exact
 						location that you are shipping to/from, in TNT terms. The full town name must match
-						the spelling TNT uses for validation.   Please work with your TNT representative to 
+						the spelling TNT uses for validation.   Please work with your TNT representative to
 						ensure your town names match TNT?s in case of errors.-->
                <!-- <CITY><![CDATA[Hoofddorp]]></CITY> -->
                <!--Element PROVINCE is optional and not validated by TNT.-->
@@ -155,40 +155,40 @@
                <!-- <CONTACTTELEPHONE><![CDATA[717733]]></CONTACTTELEPHONE> -->
                <!-- <CONTACTEMAIL><![CDATA[contact@tnt.com]]></CONTACTEMAIL> -->
             <!-- </DELIVERY> -->
-            <!--Element CONNUMBER is optional, if not provided TNT will allocate the number.  
-				This element contains your consignment number, if your application generates 
+            <!--Element CONNUMBER is optional, if not provided TNT will allocate the number.
+				This element contains your consignment number, if your application generates
 				its own TNT consignment number. You userid must be configured to allow user generated consignment numbers and so contact your TNT
                 representative to arrange for this feature. -->
             <!-- <CONNUMBER><![CDATA[{{ shipment.name }}-{{ time }}]]></CONNUMBER> -->
-            <!--Element CONNUMBER is optional This element contains your consignment reference.   
+            <!--Element CONNUMBER is optional This element contains your consignment reference.
 				This will be printed on the shipping documentations and can be used to track your consignment. -->
             <CUSTOMERREF><![CDATA[{{ shipment.shipment_delivery_note[0].delivery_note }}]]></CUSTOMERREF>
-            <!--Element CONTYPE identifies whether you are shipping a ?D? Document (paper/manuals/reports) or 
+            <!--Element CONTYPE identifies whether you are shipping a ?D? Document (paper/manuals/reports) or
 				?N? Non Document (packages).
-				Document services are not offered for a number of TNT domestic shipments. For domestic shipment 
+				Document services are not offered for a number of TNT domestic shipments. For domestic shipment
 				within these countries please use a CONTYPE of ?N? for Non-document.-->
             <CONTYPE><![CDATA[N]]></CONTYPE>
-            <!--Element PAYMENTIND is optional.  A PAYMENTIND type of ?S? represents a sender pays shipments, 
-				?R? represents a receiver.  If this element is not supplied, then the payment type is defaulted 
+            <!--Element PAYMENTIND is optional.  A PAYMENTIND type of ?S? represents a sender pays shipments,
+				?R? represents a receiver.  If this element is not supplied, then the payment type is defaulted
 				to sender. Please see user guide for further details on receiver pays. -->
             <PAYMENTIND><![CDATA[S]]></PAYMENTIND>
-            <!--Element ITEMS is mandatory.This element will contain the number of items within the shipment.   
+            <!--Element ITEMS is mandatory.This element will contain the number of items within the shipment.
 				The ITEMS element should match the total number of items defined in the packages elements. -->
             <ITEMS><![CDATA[{{ shipment.tnt_total_items_count }}]]></ITEMS>
             <!--Elements TOTALWEIGHT and TOTALVOLUME describe the total weight and volume of the consignment
-				being shipped.  The WEIGHT element contains the total weight of the shipment in Kilograms and is 
-				a mandatory element.  The VOLUME element contains the total volume of the shipment in cubic metres 
-				and is a mandatory element for Non-documents, CONTYPE = ?N?.  These totals should match the sum of the 
-				weights and volume supplies in the packages elements.  The totals from the PACKAGE elements will 
+				being shipped.  The WEIGHT element contains the total weight of the shipment in Kilograms and is
+				a mandatory element.  The VOLUME element contains the total volume of the shipment in cubic metres
+				and is a mandatory element for Non-documents, CONTYPE = ?N?.  These totals should match the sum of the
+				weights and volume supplies in the packages elements.  The totals from the PACKAGE elements will
 				be used if greater that the consignment supplied totals. -->
             <TOTALWEIGHT><![CDATA[{{ shipment.tnt_total_weight }}]]></TOTALWEIGHT>
             <TOTALVOLUME><![CDATA[{{ shipment.tnt_total_volume }}]]></TOTALVOLUME>
-            <!--Elements CURRENCY and GOODSVALUE identifies the value of the goods being shipped and the associated 
-				currency.  The currency is represented by the 3 digit ISO 4217 Alpha - 3 currency codes.  The value 
+            <!--Elements CURRENCY and GOODSVALUE identifies the value of the goods being shipped and the associated
+				currency.  The currency is represented by the 3 digit ISO 4217 Alpha - 3 currency codes.  The value
 				of goods must be supplied if you wish to insure the shipment. -->
             <!-- <CURRENCY><![CDATA[{{ shipment.tnt_currency }}]]></CURRENCY>
             <GOODSVALUE><![CDATA[{{ shipment.value_of_goods }}]]></GOODSVALUE> -->
-            <!--Elements INSURANCEVALUE and INSURANCECURRENCY are optional and contains the Enhanced Liability 
+            <!--Elements INSURANCEVALUE and INSURANCECURRENCY are optional and contains the Enhanced Liability
 				in countries where insurance is not available.-->
             <!-- <INSURANCEVALUE><![CDATA[2500.00]]></INSURANCEVALUE>
             <INSURANCECURRENCY><![CDATA[EUR]]></INSURANCECURRENCY> -->
@@ -198,15 +198,15 @@
             <SERVICE><![CDATA[{{ tnt_service or "15N" }}]]></SERVICE>
             <!--Element option is optional, maxOccurs=5-->
             <!-- <OPTION><![CDATA[PR]]></OPTION> -->
-            <!--Element DESCRIPTION is optional.   Please describe the consignment goods being shipped.   This 
+            <!--Element DESCRIPTION is optional.   Please describe the consignment goods being shipped.   This
 				is not used for custom purposes.
 				For UK domestic dangerous goods shipments, please include HZ in first 2 characters of the description.
 				For UK domestic shipments, please include the carton Code in first 2 characters of the description.
 				This must be used to attract the correct rate when invoicing the consignment for Palletised goods.-->
             <DESCRIPTION><![CDATA[{{ shipment.description_of_content }}]]></DESCRIPTION>
-            <!--Element DELIVERYINST is optional. Please supply any instructions that must be passed to the 
+            <!--Element DELIVERYINST is optional. Please supply any instructions that must be passed to the
 				TNT delivery driver when delivering the consignment.
-				For UK dangerous domestic shipments, the UN Number must be supplied in the first 4 characters of 
+				For UK dangerous domestic shipments, the UN Number must be supplied in the first 4 characters of
 				the DELIVERYINST -->
             <DELIVERYINST><![CDATA[]]></DELIVERYINST>
             <!--Element HAZARDOUS is optional-->
@@ -216,7 +216,7 @@
             <UNNUMBER><![CDATA[{{ hazardous_goods_un_number }}]]></UNNUMBER>
             <PACKINGGROUP>II</PACKINGGROUP>
             {% endif %}
-            <!--The PACKAGE element provides details on the package line.   There must be at least one Package 
+            <!--The PACKAGE element provides details on the package line.   There must be at least one Package
 				per Consignment	when entered in detail form.  There may not be more than 50 Packages per Consignment
 				when entered in detail form with no more than 99 items for a consignment. -->
             {% for parcel in shipment.shipment_parcel %}
@@ -245,8 +245,8 @@
             <!--Element INVOICENUMBER, PURCHASEORDERNUMBER, INCOTERMS, INSURANCECHARGES,
                   DISCOUNT, FREIGHTCHARGES, OTHERCHARGES is optional-->
                <!-- <INVOICENUMBER/>
-		    <PURCHASEORDERNUMBER/>		
-		    <INCOTERMS/>  
+		    <PURCHASEORDERNUMBER/>
+		    <INCOTERMS/>
 		    <DISCOUNT/>
 		    <INSURANCECHARGES/>
 		    <FREIGHTCHARGES/>
