@@ -26,7 +26,7 @@ Starktail (Pty) Ltd
 
 ### User documentation
 
-📄 ERPNext TNT Integration: https://[yoursite].com/erpnext_tnt_introduction
+📄 [ERPNext TNT Integration Documentation](https://erpnext-tnt-docs.starktail.com/erpnext_tnt_introduction)
 
 ### Installation
 
