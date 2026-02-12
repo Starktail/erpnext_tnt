@@ -3,7 +3,6 @@ import traceback
 import urllib.parse
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
-from typing import Tuple
 
 import frappe
 import requests
@@ -31,7 +30,13 @@ class TNTAPI:
 		if not self.tnt_settings.shipping_enabled:
 			raise TNTAPIDisabledError
 
-	def _build_xml_request(self, url, rendered_xml: str, use_form_data: bool = True, content_type="application/x-www-form-urlencoded") -> Tuple[dict, str, HTTPBasicAuth]:
+	def _build_xml_request(
+		self,
+		url,
+		rendered_xml: str,
+		use_form_data: bool = True,
+		content_type="application/x-www-form-urlencoded",
+	) -> tuple[dict, str, HTTPBasicAuth]:
 		headers = {"SOAPAction": url, "Content-Type": content_type}
 		if use_form_data:
 			encoded_xml = urllib.parse.quote(rendered_xml)
@@ -81,7 +86,9 @@ class TNTAPI:
 		url = self.tnt_settings.express_connect_shipping_endpoint
 
 		# Create the Consignment using the TNT API
-		headers, payload, auth = self._build_xml_request(url, rendered_xml, content_type="application/x-www-form-urlencoded; charset=UTF-8")
+		headers, payload, auth = self._build_xml_request(
+			url, rendered_xml, content_type="application/x-www-form-urlencoded; charset=UTF-8"
+		)
 		try:
 			post_response = self._request("POST", url, headers=headers, auth=auth, data=payload)
 		except Exception as e:
@@ -93,7 +100,7 @@ class TNTAPI:
 		# Check if result is string or XML, we expect a string e.g. "COMPLETE:123456"
 		try:
 			ET.fromstring(post_response.text)
-		except ET.ParseError as e:
+		except ET.ParseError:
 			pass
 		else:
 			return TNTAPIResult(error=TNTAPIUnexpectedResponseError())
@@ -118,7 +125,7 @@ class TNTAPI:
 		# Check if result is string or XML, we expect XML
 		try:
 			root = ET.fromstring(get_response.text)
-		except ET.ParseError as e:
+		except ET.ParseError:
 			return TNTAPIResult(TNTAPIUnexpectedResponseError())
 
 		# Check for errors in the response
@@ -128,7 +135,12 @@ class TNTAPI:
 			return TNTAPIResult(error=TNTAPIError(get_response.text))
 
 		# Validate response
-		if root.tag == "document" and (create_element := root.find("CREATE")) and create_element.find("SUCCESS").text == "Y" and (book_element := root.find("BOOK")):
+		if (
+			root.tag == "document"
+			and (create_element := root.find("CREATE"))
+			and create_element.find("SUCCESS").text == "Y"
+			and (book_element := root.find("BOOK"))
+		):
 			rate_element = root.find("RATE")
 
 			service_element = rate_element.find("SERVICE") if rate_element else None
@@ -161,7 +173,7 @@ class TNTAPI:
 		# Check if result is string or XML, we expect XML
 		try:
 			root = ET.fromstring(get_response.text)
-		except ET.ParseError as e:
+		except ET.ParseError:
 			return TNTAPIResult(TNTAPIUnexpectedResponseError())
 
 		# Check for errors in the response
@@ -178,7 +190,10 @@ class TNTAPI:
 				# Extract product info
 				product = rated_service.find("product")
 				if product is not None:
-					service_dict["product"] = {"id": product.findtext("id"), "productDesc": product.findtext("productDesc")}
+					service_dict["product"] = {
+						"id": product.findtext("id"),
+						"productDesc": product.findtext("productDesc"),
+					}
 
 				# Extract pricing details
 				service_dict["totalPrice"] = rated_service.findtext("totalPrice")
@@ -212,7 +227,9 @@ class TNTAPI:
 		url = self.tnt_settings.express_connect_lookup_endpoint
 
 		# Validate the City/town using the TNT API
-		headers, payload, auth = self._build_xml_request(url, rendered_xml, use_form_data=False, content_type="text/xml; charset=UTF-8")
+		headers, payload, auth = self._build_xml_request(
+			url, rendered_xml, use_form_data=False, content_type="text/xml; charset=UTF-8"
+		)
 		# This endpoint runs on a different API server/technology, which requires the payload to be encoded
 		encoded_payload = payload.encode("utf-8")
 		try:
@@ -223,14 +240,16 @@ class TNTAPI:
 		# Check if result is string or XML, we expect XML
 		try:
 			root = ET.fromstring(get_response.text)
-		except ET.ParseError as e:
+		except ET.ParseError:
 			return TNTAPIResult(TNTAPIUnexpectedResponseError())
 
 		# Check for errors in the response
 		if root.tag == "document":
 			detail_err_text = root.find(".//errorReason").text or ""
 			detail_err_text_extra = root.find(".//errorSrcText").text or ""
-			error_text = f"{detail_err_text}. {detail_err_text_extra}" if detail_err_text else get_response.text
+			error_text = (
+				f"{detail_err_text}. {detail_err_text_extra}" if detail_err_text else get_response.text
+			)
 			return TNTAPIResult(error=TNTAPIError(error_text))
 
 		# Validate response
@@ -262,7 +281,7 @@ class TNTAPI:
 		# Check if result is string or XML, we expect XML
 		try:
 			root = ET.fromstring(get_response.text)
-		except ET.ParseError as e:
+		except ET.ParseError:
 			return TNTAPIResult(TNTAPIUnexpectedResponseError())
 
 		# Check for errors in the response
@@ -283,7 +302,9 @@ class TNTAPI:
 		url = self.tnt_settings.express_label_endpoint
 
 		# Request Routing label data using the TNT API
-		headers, payload, auth = self._build_xml_request(url, rendered_xml, use_form_data=False, content_type="text/xml")
+		headers, payload, auth = self._build_xml_request(
+			url, rendered_xml, use_form_data=False, content_type="text/xml"
+		)
 
 		# TNT's label info endpoint runs on a different API server/technology, which requires the payload to be encoded
 		encoded_payload = payload.encode("utf-8")
@@ -295,11 +316,13 @@ class TNTAPI:
 		# Check if result is string or XML, we expect XML
 		try:
 			root = ET.fromstring(get_response.text)
-		except ET.ParseError as e:
+		except ET.ParseError:
 			return TNTAPIResult(TNTAPIUnexpectedResponseError())
 
 		# Check for errors in the response
-		if root.tag in ["parse_error", "runtime_error"] or (root.tag == "labelResponse" and root.find("brokenRules")):
+		if root.tag in ["parse_error", "runtime_error"] or (
+			root.tag == "labelResponse" and root.find("brokenRules")
+		):
 			return TNTAPIResult(error=TNTAPIError(get_response.text))
 
 		# Validate response
@@ -324,11 +347,13 @@ class TNTAPI:
 		# Check if result is string or XML, we expect XML
 		try:
 			root = ET.fromstring(get_response.text)
-		except ET.ParseError as e:
+		except ET.ParseError:
 			return TNTAPIResult(TNTAPIUnexpectedResponseError())
 
 		# Check for errors in the response
-		if root.tag in ["parse_error", "runtime_error"] or (root.tag == "labelResponse" and root.find("brokenRules")):
+		if root.tag in ["parse_error", "runtime_error"] or (
+			root.tag == "labelResponse" and root.find("brokenRules")
+		):
 			return TNTAPIResult(error=TNTAPIError(get_response.text))
 
 		# Validate response
@@ -347,9 +372,9 @@ def log_tnt_request(
 	params: dict,
 	data: dict,
 	res: requests.Response | None = None,
-	traceback: str = None,
-	reference_doctype: str = None,
-	reference_docname: str = None,
+	traceback: str | None = None,
+	reference_doctype: str | None = None,
+	reference_docname: str | None = None,
 ):
 	request_log = frappe.get_doc(
 		{
@@ -360,7 +385,7 @@ def log_tnt_request(
 			"method": request_method,
 			"params": frappe.as_json(params) if params else None,
 			"data": frappe.as_json(data) if data else None,
-			"response": f"{str(res)}\n{res.text}" if res is not None else None,
+			"response": f"{res!s}\n{res.text}" if res is not None else None,
 			"error": frappe.get_traceback(),
 			"status": "Success" if res and res.status_code in [200, 201] else "Error",
 			"traceback": traceback,

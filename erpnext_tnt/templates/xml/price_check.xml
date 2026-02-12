@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <priceRequest>
 	<!--##########################################################
-    
+
     Description:   This is a german domestic pricing request
-    
+
     Please note:   In order to complete the request a valid account
                    number must be provided.
-    
+
     ##########################################################
 -->
 	<appId>PC</appId>

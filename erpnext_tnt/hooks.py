@@ -171,7 +171,9 @@ before_tests = "erpnext_tnt.utils.before_tests"
 # Overriding Methods
 # ------------------------------
 #
-override_whitelisted_methods = {"frappe.utils.print_format.download_pdf": "erpnext_tnt.overrides.printing.print_format.custom_download_pdf"}
+override_whitelisted_methods = {
+	"frappe.utils.print_format.download_pdf": "erpnext_tnt.overrides.printing.print_format.custom_download_pdf"
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
@@ -245,7 +247,11 @@ fixtures = [
 			[
 				"name",
 				"in",
-				("Item-custom_tnt_is_hazardous", "Shipment-custom_tnt_is_hazardous", "Shipment-custom_tnt_hazardous_weight"),
+				(
+					"Item-custom_tnt_is_hazardous",
+					"Shipment-custom_tnt_is_hazardous",
+					"Shipment-custom_tnt_hazardous_weight",
+				),
 			]
 		],
 	},
@@ -261,3 +267,13 @@ fixtures = [
 default_log_clearing_doctypes = {
 	"TNT Request Log": 30,
 }
+
+
+standard_help_items = [
+	{
+		"item_label": "ERPNext TNT Integration Documentation",
+		"item_type": "Route",
+		"route": "/erpnext_tnt_introduction",
+		"is_standard": 1,
+	},
+]

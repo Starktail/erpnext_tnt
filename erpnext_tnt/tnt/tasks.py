@@ -4,7 +4,7 @@ import frappe
 
 
 @frappe.whitelist()
-def update_tnt_tracking(shipment, shipment_id, delivery_notes=None):
+def update_tnt_tracking(shipment: str, shipment_id: str, delivery_notes: list | None = None):
 	if delivery_notes is None:
 		delivery_notes = []
 

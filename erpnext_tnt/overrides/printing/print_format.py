@@ -1,12 +1,21 @@
 import json
 
 import frappe
+from frappe.model.document import Document
 from frappe.translate import print_language
 from frappe.www.printview import validate_print_permission
 
 
-@frappe.whitelist(allow_guest=True)
-def custom_download_pdf(doctype, name, format=None, doc=None, no_letterhead=0, language=None, letterhead=None):
+@frappe.whitelist(allow_guest=True)  # nosemgrep: guest-whitelisted-method
+def custom_download_pdf(
+	doctype: str,
+	name: str,
+	format: str | None = None,
+	doc: Document | None = None,
+	no_letterhead: int | None = 0,
+	language: str | None = None,
+	letterhead: str | None = None,
+):
 	"""
 	Custom version of download_pdf to set "margin-right" and "margin-left" in options, otherwise these would default to "15mm",
 	which breaks the TNT Label Print Formats
@@ -33,7 +42,16 @@ def custom_download_pdf(doctype, name, format=None, doc=None, no_letterhead=0, l
 				pdf_options_per_print_format = json.loads(tnt_settings.pdf_options)
 				if format in pdf_options_per_print_format:
 					pdf_options = pdf_options_per_print_format[format]
-		pdf_file = frappe.get_print(doctype, name, format, doc=doc, as_pdf=True, letterhead=letterhead, no_letterhead=no_letterhead, pdf_options=pdf_options)
+		pdf_file = frappe.get_print(
+			doctype,
+			name,
+			format,
+			doc=doc,
+			as_pdf=True,
+			letterhead=letterhead,
+			no_letterhead=no_letterhead,
+			pdf_options=pdf_options,
+		)
 	# ===========================================================================================================
 
 	frappe.local.response.filename = "{name}.pdf".format(name=name.replace(" ", "-").replace("/", "-"))

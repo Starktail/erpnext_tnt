@@ -2,7 +2,6 @@
 # For license information, please see license.txt
 
 import json
-from typing import Dict
 
 import frappe
 from frappe import ValidationError, _
@@ -68,13 +67,14 @@ def book_tnt_shipment(tnt_shipment_name: str, service_data: str):
 
 
 class TNTShipment(Document):
-
 	erpnext_shipment_ext = None
 	shipping_auth: HTTPBasicAuth = None
 	label_auth: HTTPBasicAuth = None
 
 	def _raise_error(self, err: Exception, save_to_doc=True):
-		frappe.log_error(_("TNT API Error for TNT Shipment {0}").format(self.name), err, "TNT Shipment", self.name)
+		frappe.log_error(
+			_("TNT API Error for TNT Shipment {0}").format(self.name), err, "TNT Shipment", self.name
+		)
 		if save_to_doc:
 			self.status = "Error"
 			self.error = str(err)
@@ -89,8 +89,12 @@ class TNTShipment(Document):
 
 	def _get_settings(self):
 		self.tnt_settings = frappe.get_cached_doc("TNT Settings")
-		self.shipping_auth = HTTPBasicAuth(self.tnt_settings.shipping_api_username, self.tnt_settings.get_password("shipping_api_password"))
-		self.label_auth = HTTPBasicAuth(self.tnt_settings.label_api_username, self.tnt_settings.get_password("label_api_password"))
+		self.shipping_auth = HTTPBasicAuth(
+			self.tnt_settings.shipping_api_username, self.tnt_settings.get_password("shipping_api_password")
+		)
+		self.label_auth = HTTPBasicAuth(
+			self.tnt_settings.label_api_username, self.tnt_settings.get_password("label_api_password")
+		)
 
 	def post_to_tnt_express_api(self):
 		"""
@@ -104,7 +108,7 @@ class TNTShipment(Document):
 		self.check_if_shipment_contains_hazardous_items()
 		self.error = ""
 
-		rendered_xml = frappe.render_template(
+		rendered_xml = frappe.render_template(  # nosemgrep: frappe-ssti
 			"erpnext_tnt/templates/xml/ship.xml",
 			context={
 				"username": self.tnt_settings.shipping_api_username,
@@ -144,8 +148,11 @@ class TNTShipment(Document):
 				}
 			)
 			if len(shipment.shipment_delivery_note) > 0:
-				update_delivery_notes(delivery_note_names=[row.delivery_note for row in shipment.shipment_delivery_note], tracking_number=tnt_shipment["tnt_shipment_id"][2:-2])
-		except Exception as e:
+				update_delivery_notes(
+					delivery_note_names=[row.delivery_note for row in shipment.shipment_delivery_note],
+					tracking_number=tnt_shipment["tnt_shipment_id"][2:-2],
+				)
+		except Exception:
 			pass
 
 		self.save()
@@ -181,8 +188,10 @@ class TNTShipment(Document):
 		self.save()
 
 		# TNT Routing Label
-		product_line_of_business, product_id, product_type = get_product_details(service_code=self.tnt_service)
-		rendered_xml = frappe.render_template(
+		product_line_of_business, product_id, product_type = get_product_details(
+			service_code=self.tnt_service
+		)
+		rendered_xml = frappe.render_template(  # nosemgrep: frappe-ssti
 			"erpnext_tnt/templates/xml/routing_label.xml",
 			context={
 				"tnt_account": self.tnt_settings.tnt_account,
@@ -212,31 +221,62 @@ class TNTShipment(Document):
 		self.erpnext_shipment_ext = frappe.get_doc("Shipment", self.shipment)
 
 		# Do necessary formatting and get extra data
-		self.erpnext_shipment_ext.pickup_date_formatted = frappe.utils.format_date(self.erpnext_shipment_ext.pickup_date, "dd/mm/yyyy")
-		self.erpnext_shipment_ext.pickup_from_formatted = frappe.utils.format_time(self.erpnext_shipment_ext.pickup_from, "HH:mm")
-		self.erpnext_shipment_ext.pickup_to_formatted = frappe.utils.format_time(self.erpnext_shipment_ext.pickup_to, "HH:mm")
-		self.erpnext_shipment_ext.tnt_total_items_count = sum([item.count for item in self.erpnext_shipment_ext.shipment_parcel])
-		self.erpnext_shipment_ext.tnt_total_weight = sum([item.weight for item in self.erpnext_shipment_ext.shipment_parcel])
-		self.erpnext_shipment_ext.tnt_total_volume = sum([(item.length * item.width * item.height) / 1000000 for item in self.erpnext_shipment_ext.shipment_parcel])
-		self.erpnext_shipment_ext.tnt_currency = frappe.get_value("Company", self.erpnext_shipment_ext.pickup_company, "default_currency")
+		self.erpnext_shipment_ext.pickup_date_formatted = frappe.utils.format_date(
+			self.erpnext_shipment_ext.pickup_date, "dd/mm/yyyy"
+		)
+		self.erpnext_shipment_ext.pickup_from_formatted = frappe.utils.format_time(
+			self.erpnext_shipment_ext.pickup_from, "HH:mm"
+		)
+		self.erpnext_shipment_ext.pickup_to_formatted = frappe.utils.format_time(
+			self.erpnext_shipment_ext.pickup_to, "HH:mm"
+		)
+		self.erpnext_shipment_ext.tnt_total_items_count = sum(
+			[item.count for item in self.erpnext_shipment_ext.shipment_parcel]
+		)
+		self.erpnext_shipment_ext.tnt_total_weight = sum(
+			[item.weight for item in self.erpnext_shipment_ext.shipment_parcel]
+		)
+		self.erpnext_shipment_ext.tnt_total_volume = sum(
+			[
+				(item.length * item.width * item.height) / 1000000
+				for item in self.erpnext_shipment_ext.shipment_parcel
+			]
+		)
+		self.erpnext_shipment_ext.tnt_currency = frappe.get_value(
+			"Company", self.erpnext_shipment_ext.pickup_company, "default_currency"
+		)
 
 		if self.erpnext_shipment_ext.delivery_to_type == "Customer":
-			self.erpnext_shipment_ext.customer_name = frappe.get_value("Customer", self.erpnext_shipment_ext.delivery_customer, "customer_name")
+			self.erpnext_shipment_ext.customer_name = frappe.get_value(
+				"Customer", self.erpnext_shipment_ext.delivery_customer, "customer_name"
+			)
 		elif self.erpnext_shipment_ext.delivery_to_type == "Supplier":
-			self.erpnext_shipment_ext.customer_name = frappe.get_value("Supplier", self.erpnext_shipment_ext.delivery_supplier, "supplier_name")
+			self.erpnext_shipment_ext.customer_name = frappe.get_value(
+				"Supplier", self.erpnext_shipment_ext.delivery_supplier, "supplier_name"
+			)
 		else:
 			frappe.throw(_(f"Delivery to '{self.erpnext_shipment_ext.delivery_to_type}' not supported"))
 
 		# Load the linked address docs
-		self.erpnext_shipment_ext.pickup_addr_doc = frappe.get_doc("Address", self.erpnext_shipment_ext.pickup_address_name)
-		self.erpnext_shipment_ext.delivery_addr_doc = frappe.get_doc("Address", self.erpnext_shipment_ext.delivery_address_name)
+		self.erpnext_shipment_ext.pickup_addr_doc = frappe.get_doc(
+			"Address", self.erpnext_shipment_ext.pickup_address_name
+		)
+		self.erpnext_shipment_ext.delivery_addr_doc = frappe.get_doc(
+			"Address", self.erpnext_shipment_ext.delivery_address_name
+		)
 
 		# Load the country codes for each address
-		self.erpnext_shipment_ext.pickup_addr_doc.country_code = frappe.get_value("Country", self.erpnext_shipment_ext.pickup_addr_doc.country, "code")
-		self.erpnext_shipment_ext.delivery_addr_doc.country_code = frappe.get_value("Country", self.erpnext_shipment_ext.delivery_addr_doc.country, "code")
+		self.erpnext_shipment_ext.pickup_addr_doc.country_code = frappe.get_value(
+			"Country", self.erpnext_shipment_ext.pickup_addr_doc.country, "code"
+		)
+		self.erpnext_shipment_ext.delivery_addr_doc.country_code = frappe.get_value(
+			"Country", self.erpnext_shipment_ext.delivery_addr_doc.country, "code"
+		)
 
 		# Load the linked contact docs
-		self.erpnext_shipment_ext.delivery_contact_doc = frappe.get_doc("Contact", self.erpnext_shipment_ext.delivery_contact_name)
+		self.erpnext_shipment_ext.delivery_contact_doc = frappe.get_doc(
+			"Contact", self.erpnext_shipment_ext.delivery_contact_name
+		)
 		self.get_company_contact()
 
 	def validate_linked_erpnext_shipment(self):
@@ -254,13 +294,20 @@ class TNTShipment(Document):
 				frappe.throw(_("Missing required field on Shipment: {0}").format(frappe.bold(label)))
 
 		# Validate that either Customer or Supplier is specified on the shipment
-		if not (self.erpnext_shipment_ext.get("delivery_customer") or self.erpnext_shipment_ext.get("delivery_supplier")):
+		if not (
+			self.erpnext_shipment_ext.get("delivery_customer")
+			or self.erpnext_shipment_ext.get("delivery_supplier")
+		):
 			label = f"{get_field_label(self.erpnext_shipment_ext, 'delivery_customer')}/{get_field_label(self.erpnext_shipment_ext, 'delivery_supplier')}"
 			frappe.throw(_("Missing required field on Shipment: {0}").format(frappe.bold(label)))
 
 		if self.erpnext_shipment_ext.pickup_from_type != "Company":
 			label = get_field_label(self.erpnext_shipment_ext, "pickup_from_type")
-			frappe.throw(_("{0} of type {1} is not supported").format(frappe.bold(label), frappe.bold(self.erpnext_shipment_ext.pickup_from_type)))
+			frappe.throw(
+				_("{0} of type {1} is not supported").format(
+					frappe.bold(label), frappe.bold(self.erpnext_shipment_ext.pickup_from_type)
+				)
+			)
 
 		# Validate required fields on parcel items
 		if len(self.erpnext_shipment_ext.shipment_parcel) == 0:
@@ -275,39 +322,64 @@ class TNTShipment(Document):
 			for field_name in required_address_fields:
 				if not addr.get(field_name):
 					label = get_field_label(addr, field_name)
-					frappe.throw(_("Missing required field: {0} for Address '{1}'").format(frappe.bold(label), frappe.bold(addr.name)))
+					frappe.throw(
+						_("Missing required field: {0} for Address '{1}'").format(
+							frappe.bold(label), frappe.bold(addr.name)
+						)
+					)
 
 		# Validate required fields on contacts
 		contact = self.erpnext_shipment_ext.delivery_contact_doc
 		if not contact.get("email_id"):
 			label = get_field_label(contact, "email_id")
-			frappe.throw(_("Missing required field: {0} for Contact '{1}'").format(frappe.bold(label), frappe.bold(contact.name)))
+			frappe.throw(
+				_("Missing required field: {0} for Contact '{1}'").format(
+					frappe.bold(label), frappe.bold(contact.name)
+				)
+			)
 
 		# Validate that either phone or mobile_no is set on Contact
 		if not contact.get("phone") and not contact.get("mobile_no"):
 			label = get_field_label(contact, "phone") + "/" + get_field_label(contact, "mobile_no")
-			frappe.throw(_("Missing required field: {0} for Contact '{1}'").format(frappe.bold(label), frappe.bold(contact.name)))
+			frappe.throw(
+				_("Missing required field: {0} for Contact '{1}'").format(
+					frappe.bold(label), frappe.bold(contact.name)
+				)
+			)
 
 		# Validate the address town/city fields according to TNTExpress API
 		# Validate Pickup Address City
 		city_pickup = self.validate_city_with_tnt_express(
-			country=self.erpnext_shipment_ext.pickup_addr_doc.country_code, city=self.erpnext_shipment_ext.pickup_addr_doc.city, postcode=self.erpnext_shipment_ext.pickup_addr_doc.pincode
+			country=self.erpnext_shipment_ext.pickup_addr_doc.country_code,
+			city=self.erpnext_shipment_ext.pickup_addr_doc.city,
+			postcode=self.erpnext_shipment_ext.pickup_addr_doc.pincode,
 		)
 		self.erpnext_shipment_ext.pickup_addr_doc.city = city_pickup
 
 		# Validate Delivery Address City
 		city_delivery = self.validate_city_with_tnt_express(
-			country=self.erpnext_shipment_ext.delivery_addr_doc.country_code, city=self.erpnext_shipment_ext.delivery_addr_doc.city, postcode=self.erpnext_shipment_ext.delivery_addr_doc.pincode
+			country=self.erpnext_shipment_ext.delivery_addr_doc.country_code,
+			city=self.erpnext_shipment_ext.delivery_addr_doc.city,
+			postcode=self.erpnext_shipment_ext.delivery_addr_doc.pincode,
 		)
 		self.erpnext_shipment_ext.delivery_addr_doc.city = city_delivery
 
 	def get_company_contact(self):
 		user = self.erpnext_shipment_ext.pickup_contact_person
-		company_contact = frappe.db.get_value("User", user, ["full_name", "last_name", "email", "phone", "mobile_no"], as_dict=True)
+		company_contact = frappe.db.get_value(
+			"User", user, ["full_name", "last_name", "email", "phone", "mobile_no"], as_dict=True
+		)
 
-		if not (company_contact.last_name and company_contact.email and (company_contact.phone or company_contact.mobile_no)):
+		if not (
+			company_contact.last_name
+			and company_contact.email
+			and (company_contact.phone or company_contact.mobile_no)
+		):
 			frappe.throw(
-				_("Last Name, Email or Phone/Mobile of the user are mandatory to continue.") + "</br>" + _("Please first set Last Name, Email and Phone for the user") + f' <a href="/app/user/${user}">${user}</a>'
+				_("Last Name, Email or Phone/Mobile of the user are mandatory to continue.")
+				+ "</br>"
+				+ _("Please first set Last Name, Email and Phone for the user")
+				+ f' <a href="/app/user/${user}">${user}</a>'
 			)
 		self.erpnext_shipment_ext.pickup_contact_person_dict = company_contact
 
@@ -326,10 +398,13 @@ class TNTShipment(Document):
 				"tnt_shipment": self.name,
 				"is_hazardous": True,
 				"default_service": self.tnt_settings.default_service_code,
-				"rates": [{"product": {"id": service_code, "productDesc": service_descr}} for service_code, service_descr in TNT_SERVICES],
+				"rates": [
+					{"product": {"id": service_code, "productDesc": service_descr}}
+					for service_code, service_descr in TNT_SERVICES
+				],
 			}
 
-		rendered_xml = frappe.render_template(
+		rendered_xml = frappe.render_template(  # nosemgrep: frappe-ssti
 			"erpnext_tnt/templates/xml/price_check.xml",
 			context={
 				"username": self.tnt_settings.shipping_api_username,
@@ -354,13 +429,13 @@ class TNTShipment(Document):
 		return result.data
 
 	@frappe.whitelist()
-	def fetch_tracking_tnt_express_api(self) -> Dict:
+	def fetch_tracking_tnt_express_api(self) -> dict:
 		"""
 		Fetch tracking info from the TNT Express API
 		"""
 		self._get_settings()
 
-		rendered_xml = frappe.render_template(
+		rendered_xml = frappe.render_template(  # nosemgrep: frappe-ssti
 			"erpnext_tnt/templates/xml/track.xml",
 			context={
 				"consignment_number": self.tnt_shipment_id[2:-2],  # e.g. GE981432666DE = 981432666
@@ -374,7 +449,11 @@ class TNTShipment(Document):
 			return self._raise_error(result.error)
 
 		# TNT API returns a list of consignment data in some scenarios, but we only need the first one
-		consignment_data = result.data["TrackResponse"]["Consignment"][0] if type(result.data["TrackResponse"]["Consignment"]) is list else result.data["TrackResponse"]["Consignment"]
+		consignment_data = (
+			result.data["TrackResponse"]["Consignment"][0]
+			if type(result.data["TrackResponse"]["Consignment"]) is list
+			else result.data["TrackResponse"]["Consignment"]
+		)
 		if consignment_data["SummaryCode"] == "EXC":
 			self.status = "Exception"
 		elif consignment_data["SummaryCode"] == "INT":
@@ -387,7 +466,9 @@ class TNTShipment(Document):
 		return {
 			"awb_number": self.tnt_shipment_id[2:-2],  # e.g. GE981432666DE = 981432666
 			"tracking_status": self.status,
-			"tracking_status_info": consignment_data["DeliveryDate"]["#text"] if "DeliveryDate" in consignment_data else "",
+			"tracking_status_info": consignment_data["DeliveryDate"]["#text"]
+			if "DeliveryDate" in consignment_data
+			else "",
 			"tracking_url": None,
 		}
 
@@ -400,7 +481,7 @@ class TNTShipment(Document):
 		if cached_value := frappe.cache.get_value(key):
 			return cached_value
 
-		rendered_xml = frappe.render_template(
+		rendered_xml = frappe.render_template(  # nosemgrep: frappe-ssti
 			"erpnext_tnt/templates/xml/validate_city.xml",
 			context={
 				"country": country,
@@ -415,7 +496,10 @@ class TNTShipment(Document):
 			raise self._raise_error(result.error, save_to_doc=False)
 
 		if "town" not in result.data:
-			raise self._raise_error(ValueError(_("City/Town {0} not found in TNTExpress Database").format(city)), save_to_doc=False)
+			raise self._raise_error(
+				ValueError(_("City/Town {0} not found in TNTExpress Database").format(city)),
+				save_to_doc=False,
+			)
 
 		# Set the retrieved value in cache so next time we dont have to do the work
 		frappe.cache.set_value(key, result.data["town"])
