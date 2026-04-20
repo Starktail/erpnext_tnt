@@ -152,7 +152,9 @@ class TNTAPI:
 				"tnt_service": service_element.text if service_element else None,
 				"tnt_currency": currency_element.text if currency_element else None,
 				"tnt_rate": chid_rate_element.text if chid_rate_element else None,
-				"tnt_booking_reference": booking_reference_element.text if booking_reference_element else None,
+				"tnt_booking_reference": booking_reference_element.text
+				if booking_reference_element
+				else None,
 			}
 			result_data["tnt_shipment"] = tnt_shipment
 			self.result = TNTAPIResult(raw_response_text=get_response.text, data=result_data)
