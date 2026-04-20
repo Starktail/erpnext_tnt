@@ -146,12 +146,15 @@ class TNTAPI:
 			service_element = rate_element.find("SERVICE") if rate_element else None
 			currency_element = rate_element.find("CURRENCY") if rate_element else None
 			chid_rate_element = rate_element.find("RATE") if rate_element else None
+			booking_reference_element = book_element.find("CONSIGNMENT").find("BOOKINGREF")
 			tnt_shipment = {
 				"tnt_shipment_id": create_element.find("CONNUMBER").text,
 				"tnt_service": service_element.text if service_element else None,
 				"tnt_currency": currency_element.text if currency_element else None,
 				"tnt_rate": chid_rate_element.text if chid_rate_element else None,
-				"tnt_booking_reference": book_element.find("CONSIGNMENT").find("BOOKINGREF").text,
+				"tnt_booking_reference": booking_reference_element.text
+				if booking_reference_element
+				else None,
 			}
 			result_data["tnt_shipment"] = tnt_shipment
 			self.result = TNTAPIResult(raw_response_text=get_response.text, data=result_data)
