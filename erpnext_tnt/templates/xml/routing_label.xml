@@ -74,23 +74,27 @@
 		<specialInstructions/>
         <totalNumberOfPieces>{{ shipment.tnt_total_items_count }}</totalNumberOfPieces>
 		<!--Element pieceLine, maxOccurs=unbounded-->
+        {% set ns = namespace(counter=1) %}
         {% for parcel in shipment.shipment_parcel %}
-            <pieceLine>
-                <identifier>{{ parcel.idx }}</identifier>
-                <goodsDescription><![CDATA[{{ shipment.description_of_content[:30] }}]]></goodsDescription>
-                <pieceMeasurements>
-                    <length>{{ parcel.length / 100 }}</length>
-                    <width>{{ parcel.width / 100 }}</width>
-                    <height>{{ parcel.height / 100 }}</height>
-                    <weight>{{ parcel.weight }}</weight>
-                </pieceMeasurements>
+            {% for i in range(parcel.count) %}
+                <pieceLine>
+                    <identifier>{{ ns.counter }}</identifier>
+                    <goodsDescription><![CDATA[{{ shipment.description_of_content[:30] }}]]></goodsDescription>
+                    <pieceMeasurements>
+                        <length>{{ parcel.length / 100 }}</length>
+                        <width>{{ parcel.width / 100 }}</width>
+                        <height>{{ parcel.height / 100 }}</height>
+                        <weight>{{ parcel.weight }}</weight>
+                    </pieceMeasurements>
                 <!--Element pieces, maxOccurs=unbounded-->
-                <pieces>
+                    <pieces>
                     <!--Element sequenceNumbers, maxOccurs=unbounded-->
-                    <sequenceNumbers>1</sequenceNumbers>
-                    <pieceReference><![CDATA[{{ shipment.description_of_content[:24] }}]]></pieceReference>
-                </pieces>
-            </pieceLine>
+                    <sequenceNumbers>{{ ns.counter }}</sequenceNumbers>
+                        <pieceReference><![CDATA[{{ shipment.description_of_content[:24] }}]]></pieceReference>
+                    </pieces>
+                </pieceLine>
+                {% set ns.counter = ns.counter + 1 %}
+            {% endfor %}
         {% endfor %}
 	</consignment>
 </labelRequest>
