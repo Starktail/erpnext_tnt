@@ -18,6 +18,8 @@
 
 ERPNext TNT Integration
 
+Integrates ERPNext with [TNT Express Web Services](https://express.tnt.com/expresswebservices-website/app/landing.html)
+
 
 ### License
 

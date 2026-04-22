@@ -11,7 +11,8 @@ from frappe.utils import get_time
 
 class CustomShipment(Shipment):
 	def validate(self):
-		self.check_if_shipment_contains_hazardous_items()
+		if self.is_new():
+			self.check_if_shipment_contains_hazardous_items()
 		super().validate()
 
 	def on_submit(self):

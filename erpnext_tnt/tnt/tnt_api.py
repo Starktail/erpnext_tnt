@@ -312,7 +312,9 @@ class TNTAPI:
 		# TNT's label info endpoint runs on a different API server/technology, which requires the payload to be encoded
 		encoded_payload = payload.encode("utf-8")
 		try:
-			get_response = self._request("POST", url, headers=headers, auth=auth, data=encoded_payload)
+			get_response = self._request(
+				"POST", url, headers=headers, auth=auth, data=encoded_payload, data_to_log=payload
+			)
 		except Exception as e:
 			return TNTAPIResult(error=e)
 

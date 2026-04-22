@@ -242,9 +242,15 @@ class TNTShipment(Document):
 				for item in self.erpnext_shipment_ext.shipment_parcel
 			]
 		)
-		self.erpnext_shipment_ext.tnt_currency = frappe.get_value(
-			"Company", self.erpnext_shipment_ext.pickup_company, "default_currency"
-		)
+		# Currency always comes from the Company side of the shipment
+		if self.erpnext_shipment_ext.pickup_from_type == "Company":
+			self.erpnext_shipment_ext.tnt_currency = frappe.get_value(
+				"Company", self.erpnext_shipment_ext.pickup_company, "default_currency"
+			)
+		else:
+			self.erpnext_shipment_ext.tnt_currency = frappe.get_value(
+				"Company", self.erpnext_shipment_ext.delivery_company, "default_currency"
+			)
 
 		if self.erpnext_shipment_ext.delivery_to_type == "Customer":
 			self.erpnext_shipment_ext.customer_name = frappe.get_value(
@@ -254,8 +260,20 @@ class TNTShipment(Document):
 			self.erpnext_shipment_ext.customer_name = frappe.get_value(
 				"Supplier", self.erpnext_shipment_ext.delivery_supplier, "supplier_name"
 			)
+		elif self.erpnext_shipment_ext.delivery_to_type == "Company":
+			self.erpnext_shipment_ext.customer_name = self.erpnext_shipment_ext.delivery_company
 		else:
 			frappe.throw(_(f"Delivery to '{self.erpnext_shipment_ext.delivery_to_type}' not supported"))
+
+		# For non-Company pickups, resolve the pickup party name so templates have a sender name
+		if self.erpnext_shipment_ext.pickup_from_type == "Customer":
+			self.erpnext_shipment_ext.pickup_company = frappe.get_value(
+				"Customer", self.erpnext_shipment_ext.pickup_customer, "customer_name"
+			)
+		elif self.erpnext_shipment_ext.pickup_from_type == "Supplier":
+			self.erpnext_shipment_ext.pickup_company = frappe.get_value(
+				"Supplier", self.erpnext_shipment_ext.pickup_supplier, "supplier_name"
+			)
 
 		# Load the linked address docs
 		self.erpnext_shipment_ext.pickup_addr_doc = frappe.get_doc(
@@ -293,15 +311,16 @@ class TNTShipment(Document):
 				label = get_field_label(self.erpnext_shipment_ext, field_name)
 				frappe.throw(_("Missing required field on Shipment: {0}").format(frappe.bold(label)))
 
-		# Validate that either Customer or Supplier is specified on the shipment
+		# Validate that either Customer, Supplier, or Company is specified on the shipment
 		if not (
 			self.erpnext_shipment_ext.get("delivery_customer")
 			or self.erpnext_shipment_ext.get("delivery_supplier")
+			or self.erpnext_shipment_ext.get("delivery_company")
 		):
 			label = f"{get_field_label(self.erpnext_shipment_ext, 'delivery_customer')}/{get_field_label(self.erpnext_shipment_ext, 'delivery_supplier')}"
 			frappe.throw(_("Missing required field on Shipment: {0}").format(frappe.bold(label)))
 
-		if self.erpnext_shipment_ext.pickup_from_type != "Company":
+		if self.erpnext_shipment_ext.pickup_from_type not in ("Company", "Customer", "Supplier"):
 			label = get_field_label(self.erpnext_shipment_ext, "pickup_from_type")
 			frappe.throw(
 				_("{0} of type {1} is not supported").format(
@@ -365,23 +384,49 @@ class TNTShipment(Document):
 		self.erpnext_shipment_ext.delivery_addr_doc.city = city_delivery
 
 	def get_company_contact(self):
-		user = self.erpnext_shipment_ext.pickup_contact_person
-		company_contact = frappe.db.get_value(
-			"User", user, ["full_name", "last_name", "email", "phone", "mobile_no"], as_dict=True
-		)
-
-		if not (
-			company_contact.last_name
-			and company_contact.email
-			and (company_contact.phone or company_contact.mobile_no)
-		):
-			frappe.throw(
-				_("Last Name, Email or Phone/Mobile of the user are mandatory to continue.")
-				+ "</br>"
-				+ _("Please first set Last Name, Email and Phone for the user")
-				+ f' <a href="/app/user/${user}">${user}</a>'
+		if self.erpnext_shipment_ext.pickup_from_type == "Company":
+			user = self.erpnext_shipment_ext.pickup_contact_person
+			company_contact = frappe.db.get_value(
+				"User", user, ["full_name", "last_name", "email", "phone", "mobile_no"], as_dict=True
 			)
-		self.erpnext_shipment_ext.pickup_contact_person_dict = company_contact
+
+			if not (
+				company_contact.last_name
+				and company_contact.email
+				and (company_contact.phone or company_contact.mobile_no)
+			):
+				frappe.throw(
+					_("Last Name, Email or Phone/Mobile of the user are mandatory to continue.")
+					+ "</br>"
+					+ _("Please first set Last Name, Email and Phone for the user")
+					+ f' <a href="/app/user/${user}">${user}</a>'
+				)
+			self.erpnext_shipment_ext.pickup_contact_person_dict = company_contact
+		else:
+			contact_name = self.erpnext_shipment_ext.pickup_contact_name
+			contact = frappe.db.get_value(
+				"Contact",
+				contact_name,
+				["full_name", "last_name", "email_id", "phone", "mobile_no"],
+				as_dict=True,
+			)
+			if not contact:
+				frappe.throw(_("Pickup contact '{0}' not found").format(contact_name))
+			if not (contact.last_name and contact.email_id and (contact.phone or contact.mobile_no)):
+				frappe.throw(
+					_(
+						"Last Name, Email or Phone/Mobile of the pickup contact '{0}' are mandatory to continue."
+					).format(contact_name)
+				)
+			self.erpnext_shipment_ext.pickup_contact_person_dict = frappe._dict(
+				{
+					"full_name": contact.full_name,
+					"last_name": contact.last_name,
+					"email": contact.email_id,
+					"phone": contact.phone,
+					"mobile_no": contact.mobile_no or contact.phone,
+				}
+			)
 
 	def fetch_rates_from_tnt_express_api(self):
 		"""
