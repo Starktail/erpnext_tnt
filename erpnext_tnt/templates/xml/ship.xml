@@ -125,7 +125,7 @@
                <COUNTRY><![CDATA[{{ shipment.delivery_addr_doc.country_code | upper }}]]></COUNTRY>
                <!--Element VAT is optional  -->
                <!-- <VAT/> -->
-               <CONTACTNAME><![CDATA[{{ shipment.delivery_contact_doc.name }}]]></CONTACTNAME>
+               <CONTACTNAME><![CDATA[{{ shipment.delivery_contact_doc.full_name or shipment.delivery_contact_doc.name }}]]></CONTACTNAME>
                <CONTACTDIALCODE><![CDATA[000]]></CONTACTDIALCODE>
                <CONTACTTELEPHONE><![CDATA[{{ (shipment.delivery_contact_doc.phone or shipment.delivery_contact_doc.mobile_no) | replace("+","") | replace(" ","") }}]]></CONTACTTELEPHONE>
                <CONTACTEMAIL><![CDATA[{{ shipment.delivery_contact_doc.email_id }}]]></CONTACTEMAIL>

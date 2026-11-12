@@ -18,3 +18,6 @@ docs/.vitepress/cache
 
 # built artefacts
 erpnext_tnt/public/dist
+
+.claude
+.agents

@@ -251,6 +251,7 @@ fixtures = [
 					"Item-custom_tnt_is_hazardous",
 					"Shipment-custom_tnt_is_hazardous",
 					"Shipment-custom_tnt_hazardous_weight",
+					"Shipment-custom_tnt_use_address_title_as_receiver",
 				),
 			]
 		],
