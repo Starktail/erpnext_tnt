@@ -283,6 +283,13 @@ class TNTShipment(Document):
 			"Address", self.erpnext_shipment_ext.delivery_address_name
 		)
 
+		# For drop shipments the ordering customer is not the recipient, so the user can opt in
+		# to using the delivery address title as receiver name instead of the party name
+		if self.erpnext_shipment_ext.get("custom_tnt_use_address_title_as_receiver"):
+			address_title = (self.erpnext_shipment_ext.delivery_addr_doc.address_title or "").strip()
+			if address_title:
+				self.erpnext_shipment_ext.customer_name = address_title
+
 		# Load the country codes for each address
 		self.erpnext_shipment_ext.pickup_addr_doc.country_code = frappe.get_value(
 			"Country", self.erpnext_shipment_ext.pickup_addr_doc.country, "code"
